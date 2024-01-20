@@ -1,0 +1,3 @@
+[submodule "iMovie"]
+	path = iMovie
+	url = https://github.com/hoangatuan/iMovie.git
