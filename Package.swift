@@ -10,13 +10,22 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.2.0"),
+        .package(url: "https://github.com/JohnSundell/ShellOut.git", from: "2.0.0")
     ],
     targets: [
         .executableTarget(
             name: "TestDetector",
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
+                "ShellOut",
             ]
         ),
+        .testTarget(
+            name: "TestsDetectorTest",
+            dependencies: [
+                "TestDetector"
+            ],
+            path: "Tests"
+        )
     ]
 )
