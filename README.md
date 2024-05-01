@@ -20,5 +20,6 @@
 3. https://docs.tuist.io/cloud/hashing#debugging
 4. https://docs.tuist.io/cloud/binary-caching#cache-warming
 5. https://github.com/tuist/tuist/pull/1765
-6. https://github.com/tuist/tuist/issues/1828
-7. https://github.com/Ryu0118/swift-dependencies-graph (using swift package dump-package to get all the dependencies)
+7. Selective test: https://github.com/tuist/tuist/pull/2422
+8. Generate test scheme: https://github.com/tuist/tuist/pull/2057
+9. https://github.com/Ryu0118/swift-dependencies-graph (using swift package dump-package to get all the dependencies)
