@@ -6,11 +6,12 @@ import PackageDescription
 let package = Package(
     name: "TestDetector",
     platforms: [
-        .macOS(.v10_15)
+        .macOS(.v11)
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.2.0"),
-        .package(url: "https://github.com/JohnSundell/ShellOut.git", from: "2.0.0")
+        .package(url: "https://github.com/JohnSundell/ShellOut.git", from: "2.0.0"),
+        .package(url: "https://github.com/JohnSundell/Files", from: "4.2.0")
     ],
     targets: [
         .executableTarget(
@@ -18,6 +19,7 @@ let package = Package(
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 "ShellOut",
+                "Files",
             ]
         ),
         .testTarget(
