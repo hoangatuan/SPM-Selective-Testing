@@ -7,6 +7,15 @@
 3. Figure out which target need be test again?
 4. Update the coverage to the cache repo
 
+# Note
+
+- The hash for the target should be calculate by:
+  + The target's attributes (e.g., name, platform, product, etc.).
+  + The target's files
+  + The hash of the target's dependencies
+  + swift version?
+  Ref: https://docs.tuist.io/cloud/hashing.html
+
 # Idea
 
 1. Subcommand to init configuration file
