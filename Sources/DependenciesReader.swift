@@ -1,10 +1,6 @@
 
 import Foundation
 
-public struct Module {
-    let name: String
-    let dependencies: [String]
-}
 
 public struct DependenciesReader {
     private let packageRootDirectoryPath: String
@@ -18,12 +14,12 @@ public struct DependenciesReader {
         self.decoder = decoder
     }
     
-    public func readDependencies(isIncludeProduct: Bool) throws -> [Module] {
+    public func readDependencies() throws -> [Module] {
         let jsonString = try dumpPackage()
         let jsonData = jsonString.data(using: .utf8)!
         return try decoder
             .decode(DumpPackageResponse.self, from: jsonData)
-            .toModule(isIncludeProduct: isIncludeProduct)
+            .toModule()
     }
     
     private func dumpPackage() throws -> String {
@@ -36,11 +32,17 @@ public struct DependenciesReader {
 }
 
 private struct DumpPackageResponse: Decodable {
+//    let rootPat
     let targets: [Target]
     
     struct Target: Decodable {
         let name: String
+        let type: TargetType
         let dependencies: [Dependency]
+        let path: String?
+        let sources: [String]? // If this property is `nil`, Swift Package Manager includes all valid source files in the target's path
+        let exclude: [String]
+//        let settings
         
         struct Dependency: Decodable {
             let byName: [String?]?
@@ -50,12 +52,19 @@ private struct DumpPackageResponse: Decodable {
 }
 
 extension DumpPackageResponse {
-    func toModule(isIncludeProduct: Bool) -> [Module] {
+    func toModule() -> [Module] {
         targets.map { target in
             let byNameDependencies = target.dependencies.compactMap { $0.byName?.compactMap { $0 }.first }
             let productDependencies = target.dependencies.compactMap { $0.product?.compactMap { $0 }.first }
-            let dependencies = isIncludeProduct ? byNameDependencies + productDependencies : byNameDependencies
-            return Module(name: target.name, dependencies: dependencies)
+            let dependencies = byNameDependencies + productDependencies
+            return Module(
+                name: target.name,
+                type: target.type,
+                dependencies: dependencies,
+                path: target.path,
+                sources: target.sources,
+                exclude: target.exclude
+            )
         }
     }
 }

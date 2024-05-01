@@ -34,11 +34,11 @@ struct TestsDetector: ParsableCommand {
         let modules = try packageFiles.compactMap { file -> [Module]? in
             guard let url = file.parent?.path else { return nil }
             let reader = DependenciesReader(packageRootDirectoryPath: url)
-            let modules = try reader.readDependencies(isIncludeProduct: false)
+            let modules = try reader.readDependencies()
             return modules
         }
         
-//        let updatedModule = convert(from: modules)
+        // Next: Hash all the information
         
         debugPrint("A")
     }
