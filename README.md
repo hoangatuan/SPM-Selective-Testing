@@ -47,3 +47,4 @@
 7. Selective test: https://github.com/tuist/tuist/pull/2422
 8. Generate test scheme: https://github.com/tuist/tuist/pull/2057
 9. https://github.com/Ryu0118/swift-dependencies-graph (using swift package dump-package to get all the dependencies)
+10. [PackageDescription](https://developer.apple.com/documentation/packagedescription)
