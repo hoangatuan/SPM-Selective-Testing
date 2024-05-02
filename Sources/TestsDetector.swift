@@ -36,8 +36,9 @@ struct TestsDetector: ParsableCommand {
             let reader = DependenciesReader(packageRootDirectoryPath: url)
             let modules = try reader.readDependencies()
             return modules
-        }
+        }.flatMap { $0 }
         
+        let sourceCodes = modules[0].sourceCodes
         // Next: Hash all the information
         
         debugPrint("A")

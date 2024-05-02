@@ -32,7 +32,7 @@ public struct DependenciesReader {
 }
 
 private struct DumpPackageResponse: Decodable {
-//    let root
+    let rootPaths: [String]
     let targets: [Target]
     
     struct Target: Decodable {
@@ -49,6 +49,22 @@ private struct DumpPackageResponse: Decodable {
             let product: [String?]?
         }
     }
+    
+    enum CodingKeys: String, CodingKey {
+        case packageKind
+        case targets
+    }
+    
+    enum PackageKindCodingKeys: String, CodingKey {
+        case root
+    }
+    
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let rootPath = try container.nestedContainer(keyedBy: PackageKindCodingKeys.self, forKey: .packageKind)
+        rootPaths = try rootPath.decode([String].self, forKey: .root)
+        targets = try container.decode([Target].self, forKey: .targets)
+    }
 }
 
 extension DumpPackageResponse {
@@ -61,6 +77,7 @@ extension DumpPackageResponse {
                 name: target.name,
                 type: target.type,
                 dependencies: dependencies,
+                root: rootPaths[0],
                 path: target.path,
                 sources: target.sources,
                 exclude: target.exclude
