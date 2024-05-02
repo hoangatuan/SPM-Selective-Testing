@@ -32,7 +32,7 @@ public struct DependenciesReader {
 }
 
 private struct DumpPackageResponse: Decodable {
-//    let rootPat
+//    let root
     let targets: [Target]
     
     struct Target: Decodable {

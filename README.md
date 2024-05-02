@@ -22,6 +22,21 @@
 2. subcommand to run the full flow
 3. Subcommand to get the dependencies only
 
+# Edge case to check
+
+- a product contains multiple targets
+- A target that has custom `excludes`
+- A target that has custom `sources`
+
+# Note
+
+- If a target has the path = nil => Swift Package Manager looks for a target's source files at predefined search paths and in a subdirectory with the target's name.
+    The predefined search paths are the following directories under the package root:
+        + `Sources`, `Source`, `src`, and `srcs` for regular targets
+        + `Tests`, `Sources`, `Source`, `src`, and `srcs` for test targets
+        
+- If sources = nil => SPM includes all valid source files in the target's path. Otherwise, Swift Package Manager searches for valid source files recursively inside the path
+
 # References
 
 1. Calculate coverages for each targets: https://github.com/ronanociosoig-200/Tuist-Pokedex/blob/master/scripts/readCodeCoverage.swift
