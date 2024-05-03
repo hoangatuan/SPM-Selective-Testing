@@ -21,6 +21,7 @@
 1. Subcommand to init configuration file
 2. subcommand to run the full flow
 3. Subcommand to get the dependencies only
+4. provide a `config.yaml` file to let user define: direct depend framework of main project, excludes targets
 
 # Edge case to check
 
