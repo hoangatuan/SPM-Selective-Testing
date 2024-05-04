@@ -6,11 +6,11 @@
 -> Generate hash for all targets. ✅
 -> Check if already has a cache file? 
     + YES: 
-        + Compare the hash of the current targets with the hash in the cache file
-        + Get all the targets that needs to be run
+        + Compare the hash of the current targets with the hash in the cache file ✅
+        + Get all the targets that needs to be run ✅
     + NO: (first run)
-        + Create cache file to store all the hashes
-        + All test target must need to be run
+        + Create cache file to store all the hashes ✅ 
+        + All test target must need to be run ✅
 -> Run test targets that changed
 -> Process the xctestrun file to get the coverage
 -> Update cache file with new hashes
