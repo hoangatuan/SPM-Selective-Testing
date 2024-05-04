@@ -1,11 +1,20 @@
 
 # Steps
 
-0. Run test for all project, process the xctest result to calculate the code coverage, hash for each targets. Then store the result as a cache on another repo. (
-1. Generate all the targets and relationships from Podfile & Podfile.lock
-2. Calculate the hash for each target and the target's test.
-3. Figure out which target need be test again?
-4. Update the coverage to the cache repo
+- Click on run test
+-> Generate targets dependencies based on Package.resolved ✅
+-> Generate hash for all targets. ✅
+-> Check if already has a cache file? 
+    + YES: 
+        + Compare the hash of the current targets with the hash in the cache file
+        + Get all the targets that needs to be run
+    + NO: (first run)
+        + Create cache file to store all the hashes
+        + All test target must need to be run
+-> Run test targets that changed
+-> Process the xctestrun file to get the coverage
+-> Update cache file with new hashes
+-> Return result
 
 # Note
 
@@ -21,7 +30,7 @@
 1. Subcommand to init configuration file
 2. subcommand to run the full flow
 3. Subcommand to get the dependencies only
-4. provide a `config.yaml` file to let user define: direct depend framework of main project, excludes targets
+4. provide a `config.yaml` file to let user define: direct depend framework of main project, excludes targets/test targets, test targets that needs to be run (if empty run all the test targets)
 
 # Edge case to check
 
