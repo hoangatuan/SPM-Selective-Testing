@@ -7,7 +7,20 @@
 
 import Foundation
 
-struct RemoteModule {
+struct RemoteModule: IModule {
     let name: String
-    let version: String
+    let moduleType: ModuleType
+    
+    init(name: String, version: String) {
+        self.name = name
+        self.moduleType = .remote(version: version)
+    }
+    
+    var sourceCodes: [String] {
+        []
+    }
+    
+    var dependencies: [ModuleName] {
+        []
+    }
 }

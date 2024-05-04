@@ -28,7 +28,7 @@
 - a product contains multiple targets
 - A target that has custom `excludes`
 - A target that has custom `sources`
--  A dependencies of type `framework`
+- A dependencies of type `framework`   
 
 # Note
 

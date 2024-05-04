@@ -170,7 +170,10 @@ extension PackageResolved {
             guard let checkoutURL = pin.checkoutURL else { return nil }
             let modules = try checkouts.modules(checkoutURL: checkoutURL)
             let remoteModules = modules?.compactMap {
-                RemoteModule(name: $0.name, version: pin.state.version ?? pin.state.revision)
+                RemoteModule(
+                    name: $0.name,
+                    version: pin.state.version ?? pin.state.revision
+                )
             }
             
             return Package(
@@ -197,7 +200,10 @@ extension PackageResolved {
             let name = workspaceState.packageName(for: pin.identity) ?? pin.identity
             let modules = try checkouts.modules(checkoutURL: checkoutURL)
             let remoteModules = modules?.compactMap {
-                RemoteModule(name: $0.name, version: pin.state.version ?? pin.state.revision)
+                RemoteModule(
+                    name: $0.name,
+                    version: pin.state.version ?? pin.state.revision
+                )
             }
             
             return Package(

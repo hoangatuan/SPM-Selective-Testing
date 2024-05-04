@@ -23,6 +23,8 @@ struct TestsDetector: ParsableCommand {
     private var fileManager: FileManager { FileManager.default }
     
     func run() throws {
+        var allModules: [IModule] = []
+        
         // Find all local modules
         let packageFiles = try! findPackageFiles()
         let modules = try packageFiles.compactMap { file -> [Module]? in
@@ -38,6 +40,15 @@ struct TestsDetector: ParsableCommand {
         let project = try projectType.project(fileURL: projectFileURL)
         let packages: [Package] = try project.packages()
         let remoteModules = packages.map { $0.modules }.compactMap { $0 }.flatMap { $0 }
+        
+        allModules += modules
+        allModules += remoteModules
+        
+        let moduleHasher = ModuleHasher(
+            modules: allModules
+        )
+        
+        try moduleHasher.generateHash()
         
         debugPrint("A")
     }
