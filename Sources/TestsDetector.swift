@@ -58,7 +58,7 @@ struct TestsDetector: ParsableCommand {
         // Find changed test targets
         let testTargets = try getChangedTestTargets(from: moduleHashes, allModules: allModules)
         
-        debugPrint("A")
+        debugPrint(testTargets)
     }
     
     private func findPackageFiles() throws -> [File] {
@@ -71,11 +71,22 @@ struct TestsDetector: ParsableCommand {
         return files
     }
     
+    // TODO: Refactor to avoid duplication
     private func getChangedTestTargets(from moduleHashes: [String: MD5Hash], allModules: [IModule]) throws -> [IModule] {
         let directoryURL = URL(fileURLWithPath: fileManager.currentDirectoryPath)
         let cacheURL = directoryURL.appendingPathComponent(cachePath)
         try fileManager.createDirectory(at: cacheURL, withIntermediateDirectories: true)
         let cacheFileURL = cacheURL.appendingPathComponent(filename)
+        
+        let allTestModules = allModules.filter { $0.isTest }
+        let allTestModulesDict = allTestModules.dictionary
+        
+        let testModuleHashes = moduleHashes.filter {
+            if let module = allTestModulesDict[$0.key], module.isTest {
+                return true
+            }
+            return false
+        }
         
         if fileManager.fileExists(atPath: cacheFileURL.path()) {
             let currentHashesJsonString = try String(contentsOf: cacheFileURL)
@@ -84,25 +95,23 @@ struct TestsDetector: ParsableCommand {
             let currentModuleHashes = try JSONSerialization.jsonObject(with: currentHashesJsonData, options: []) as? [String: MD5Hash] ?? [:]
             
             var testModules: [IModule] = []
-            let allModulesDic = allModules.dictionary
             
-            moduleHashes.forEach { (key, value) in
+            testModuleHashes.forEach { (key, value) in
                 if let currentHash = currentModuleHashes[key], currentHash != value {
-                    if let module = allModulesDic[key], module.isTest {
+                    if let module = allTestModulesDict[key] {
                         testModules.append(module)
                     }
                 }
             }
             
-            try fileManager.removeItem(at: cacheURL)
-            let jsonData = try JSONSerialization.data(withJSONObject: moduleHashes, options: .prettyPrinted)
-            try jsonData.write(to: cacheURL)
+            try fileManager.removeItem(at: cacheFileURL)
+            let jsonData = try JSONSerialization.data(withJSONObject: testModuleHashes, options: .prettyPrinted)
+            try jsonData.write(to: cacheFileURL)
             
             return testModules
         } else {
-            let jsonData = try JSONSerialization.data(withJSONObject: moduleHashes, options: .prettyPrinted)
+            let jsonData = try JSONSerialization.data(withJSONObject: testModuleHashes, options: .prettyPrinted)
             try jsonData.write(to: cacheFileURL)
-            let allTestModules = allModules.filter { $0.isTest }
             return allTestModules
         }
     }
