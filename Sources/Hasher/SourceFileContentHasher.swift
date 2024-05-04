@@ -8,6 +8,11 @@
 import Foundation
 import Files
 
+/*
+ TODO:
+ 1. Utilize threading to hash files concurrently
+ */
+
 protocol SourceFileContentHashing {
     func hash(sources: [String]) throws -> MD5Hash
 }

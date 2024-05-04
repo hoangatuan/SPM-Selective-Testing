@@ -17,7 +17,7 @@ enum ModuleHasherError: Error {
 final class ModuleHasher {
     
     private let modules: [IModule]
-    var dic: [ModuleName: MD5Hash] = [:]
+    private var dic: [ModuleName: MD5Hash] = [:]
     private var modulesDic: [ModuleName: IModule] = [:]
     
     let contentHasher: ContentHashing
@@ -31,19 +31,18 @@ final class ModuleHasher {
         versionHasher: VersionHashing = VersionHasher()
     ) {
         self.modules = modules
+        self.modulesDic = modules.dictionary
         self.contentHasher = contentHasher
         self.sourceFileContentHasher = sourceFileContentHasher
         self.versionHasher = versionHasher
-        
-        modules.forEach {
-            modulesDic[$0.name] = $0
-        }
     }
     
-    func generateHash() throws {
+    func generateHash() throws -> [ModuleName: MD5Hash] {
         try modules.forEach {
             try hash(module: $0)
         }
+        
+        return dic
     }
     
     @discardableResult

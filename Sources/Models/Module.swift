@@ -28,6 +28,7 @@ protocol IModule {
     var dependencies: [ModuleName] { get }
     var sourceCodes: [String] { get }
     var moduleType: ModuleType { get }
+    var isTest: Bool { get }
 }
 
 public struct Module: IModule {

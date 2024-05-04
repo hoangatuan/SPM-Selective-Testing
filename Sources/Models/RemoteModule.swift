@@ -23,4 +23,8 @@ struct RemoteModule: IModule {
     var dependencies: [ModuleName] {
         []
     }
+    
+    var isTest: Bool {
+        false
+    }
 }
