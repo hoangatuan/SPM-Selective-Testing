@@ -1,0 +1,12 @@
+arguments:
+- -project
+- ./iMovie/iMovie.xcodeproj
+- -scheme
+- iMovie
+- -sdk
+- iphonesimulator
+- -destination
+- platform=iOS Simulator,name=iPhone SE (3rd generation)
+- -testPlan
+- iMovie
+- test

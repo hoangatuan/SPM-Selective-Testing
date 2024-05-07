@@ -4,14 +4,14 @@ import Foundation
 
 // MARK: - Welcome
 struct TestPlanModel: Codable {
-    var configurations: [Configuration]
+    var configurations: [TestPlanConfiguration]
     var defaultOptions: DefaultOptions
     var testTargets: [TestTarget]
     var version: Int
 }
 
 // MARK: - Configuration
-struct Configuration: Codable {
+struct TestPlanConfiguration: Codable {
     var id, name: String
     var options: Options
 }

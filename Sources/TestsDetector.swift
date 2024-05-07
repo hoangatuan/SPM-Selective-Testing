@@ -14,6 +14,7 @@ struct TestsDetector: ParsableCommand {
 #if DEBUG
     private var rootPath: String = "/Users/tuanhoang/Documents/TestsDetector/iMovie"
     private var projectPath: String = "/Users/tuanhoang/Documents/TestsDetector/iMovie/iMovie.xcodeproj"
+    private var testPlanPath: String = "/Users/tuanhoang/Documents/TestsDetector/iMovie/iMovie.xctestplan"
     private var cachePath = "/TestsCache"
     
 #else
@@ -25,44 +26,44 @@ struct TestsDetector: ParsableCommand {
     private let filename = "TestsCache.json"
     
     func run() throws {
-//        FileManager.default.changeCurrentDirectoryPath(rootPath)
-//        
-//        var allModules: [IModule] = []
-//        
-//        // Find all local modules
-//        let packageFiles = try! findPackageFiles()
-//        let modules = try packageFiles.compactMap { file -> [Module]? in
-//            guard let url = file.parent?.path else { return nil }
-//            let reader = DependenciesReader(packageRootDirectoryPath: url)
-//            let modules = try reader.readDependencies()
-//            return modules
-//        }.flatMap { $0 }
-//        
-//        // Find all remote modules
-//        let projectFileURL = URL(fileURLWithPath: projectPath)
-//        let projectType = try ProjectType(fileURL: projectFileURL)
-//        let project = try projectType.project(fileURL: projectFileURL)
-//        let packages: [Package] = try project.packages()
-//        let remoteModules = packages.map { $0.modules }.compactMap { $0 }.flatMap { $0 }
-//        
-//        allModules += modules
-//        allModules += remoteModules
-//        
-//        let moduleHasher = ModuleHasher(
-//            modules: allModules
-//        )
-//
-//        // Generate module hashes
-//        let moduleHashes = try moduleHasher.generateHash()
-//        
-//        // Find changed test targets
-//        let testTargets = try getChangedTestTargets(from: moduleHashes, allModules: allModules)
-//        
-//        debugPrint(testTargets)
+        FileManager.default.changeCurrentDirectoryPath(rootPath)
         
-        var testplan = try TestPlanGenerator.readTestPlan(filePath: "/Users/tuanhoang/Documents/iMovie.xctestplan")
-        TestPlanGenerator.updateTestPlanTargets(testPlan: &testplan, affectedTargets: [])
-        try TestPlanGenerator.writeTestPlan(testplan, filePath: "/Users/tuanhoang/Documents/iMovie.xctestplan")
+        var allModules: [IModule] = []
+        
+        // Find all local modules
+        let packageFiles = try! findPackageFiles()
+        let modules = try packageFiles.compactMap { file -> [Module]? in
+            guard let url = file.parent?.path else { return nil }
+            let reader = DependenciesReader(packageRootDirectoryPath: url)
+            let modules = try reader.readDependencies()
+            return modules
+        }.flatMap { $0 }
+        
+        // Find all remote modules
+        let projectFileURL = URL(fileURLWithPath: projectPath)
+        let projectType = try ProjectType(fileURL: projectFileURL)
+        let project = try projectType.project(fileURL: projectFileURL)
+        let packages: [Package] = try project.packages()
+        let remoteModules = packages.map { $0.modules }.compactMap { $0 }.flatMap { $0 }
+        
+        allModules += modules
+        allModules += remoteModules
+        
+        let moduleHasher = ModuleHasher(
+            modules: allModules
+        )
+
+        // Generate module hashes
+        let moduleHashes = try moduleHasher.generateHash()
+        
+        // Find changed test targets
+        let testTargets = try getChangedTestTargets(from: moduleHashes, allModules: allModules).map { $0.name }
+        
+        debugPrint(testTargets)
+        
+        var testplan = try TestPlanGenerator.readTestPlan(filePath: testPlanPath)
+        TestPlanGenerator.updateTestPlanTargets(testPlan: &testplan, affectedTargets: Set(testTargets))
+        try TestPlanGenerator.writeTestPlan(testplan, filePath: testPlanPath)
         debugPrint(testplan)
     }
     
