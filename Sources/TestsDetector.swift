@@ -25,40 +25,45 @@ struct TestsDetector: ParsableCommand {
     private let filename = "TestsCache.json"
     
     func run() throws {
-        FileManager.default.changeCurrentDirectoryPath(rootPath)
+//        FileManager.default.changeCurrentDirectoryPath(rootPath)
+//        
+//        var allModules: [IModule] = []
+//        
+//        // Find all local modules
+//        let packageFiles = try! findPackageFiles()
+//        let modules = try packageFiles.compactMap { file -> [Module]? in
+//            guard let url = file.parent?.path else { return nil }
+//            let reader = DependenciesReader(packageRootDirectoryPath: url)
+//            let modules = try reader.readDependencies()
+//            return modules
+//        }.flatMap { $0 }
+//        
+//        // Find all remote modules
+//        let projectFileURL = URL(fileURLWithPath: projectPath)
+//        let projectType = try ProjectType(fileURL: projectFileURL)
+//        let project = try projectType.project(fileURL: projectFileURL)
+//        let packages: [Package] = try project.packages()
+//        let remoteModules = packages.map { $0.modules }.compactMap { $0 }.flatMap { $0 }
+//        
+//        allModules += modules
+//        allModules += remoteModules
+//        
+//        let moduleHasher = ModuleHasher(
+//            modules: allModules
+//        )
+//
+//        // Generate module hashes
+//        let moduleHashes = try moduleHasher.generateHash()
+//        
+//        // Find changed test targets
+//        let testTargets = try getChangedTestTargets(from: moduleHashes, allModules: allModules)
+//        
+//        debugPrint(testTargets)
         
-        var allModules: [IModule] = []
-        
-        // Find all local modules
-        let packageFiles = try! findPackageFiles()
-        let modules = try packageFiles.compactMap { file -> [Module]? in
-            guard let url = file.parent?.path else { return nil }
-            let reader = DependenciesReader(packageRootDirectoryPath: url)
-            let modules = try reader.readDependencies()
-            return modules
-        }.flatMap { $0 }
-        
-        // Find all remote modules
-        let projectFileURL = URL(fileURLWithPath: projectPath)
-        let projectType = try ProjectType(fileURL: projectFileURL)
-        let project = try projectType.project(fileURL: projectFileURL)
-        let packages: [Package] = try project.packages()
-        let remoteModules = packages.map { $0.modules }.compactMap { $0 }.flatMap { $0 }
-        
-        allModules += modules
-        allModules += remoteModules
-        
-        let moduleHasher = ModuleHasher(
-            modules: allModules
-        )
-        
-        // Generate module hashes
-        let moduleHashes = try moduleHasher.generateHash()
-        
-        // Find changed test targets
-        let testTargets = try getChangedTestTargets(from: moduleHashes, allModules: allModules)
-        
-        debugPrint(testTargets)
+        var testplan = try TestPlanGenerator.readTestPlan(filePath: "/Users/tuanhoang/Documents/iMovie.xctestplan")
+        TestPlanGenerator.updateTestPlanTargets(testPlan: &testplan, affectedTargets: [])
+        try TestPlanGenerator.writeTestPlan(testplan, filePath: "/Users/tuanhoang/Documents/iMovie.xctestplan")
+        debugPrint(testplan)
     }
     
     private func findPackageFiles() throws -> [File] {
