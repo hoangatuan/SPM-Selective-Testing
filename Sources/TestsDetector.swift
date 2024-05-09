@@ -72,15 +72,17 @@ struct TestsDetector: ParsableCommand {
 
         debugPrint(testTargets)
         
-        // Update test plan
+        if testTargets.isEmpty {
+            print("No test targets need to be run")
+            return
+        }
         
+        // Update test plan
         TestPlanGenerator.updateTestPlanTargets(testPlan: &testplan, affectedTargets: Set(testTargets))
         try TestPlanGenerator.writeTestPlan(testplan, filePath: testPlanPath)
-        debugPrint(testplan)
 
         // Run test
-        
-//        try shellOut(to: "xcodebuild", arguments: configuration.testCommandArguments)
+        try shellOut(to: "xcodebuild", arguments: configuration.testCommandArguments)
         
         // Store cache
         try storeCache(with: configuration, updatedModuleHashes: enabledTestModuleHashes)
