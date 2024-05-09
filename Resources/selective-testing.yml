@@ -1,5 +1,5 @@
 cache_repo:
-  local: ""
+  local: "/Users/tuanhoang/Desktop/Cache"
   remote: ""
 arguments:
 - -project

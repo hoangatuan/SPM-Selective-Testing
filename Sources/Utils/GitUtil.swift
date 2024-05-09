@@ -10,6 +10,7 @@ import ShellOut
 
 enum GitUtil {
     static func getCurrentBranch() throws -> String {
-        return try shellOut(to: "git", arguments: ["branch", "--show-current"])
+        return "Main"
+//        return try shellOut(to: "git", arguments: ["branch", "--show-current"])
     }
 }
