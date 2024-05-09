@@ -67,7 +67,7 @@ struct TestsDetector: ParsableCommand {
         
         // Find changed test targets
         let testTargets = try getChangedTestTargets(from: moduleHashes, currentModuleHashes: currentModuleHashes, allModules: allModules).map { $0.name }
-        
+
         debugPrint(testTargets)
         
         // Update test plan
@@ -81,7 +81,8 @@ struct TestsDetector: ParsableCommand {
         try shellOut(to: "xcodebuild", arguments: configuration.testCommandArguments)
         
         // Store cache
-        
+        let updatedModuleHashes = getTestModuleHashes(from: moduleHashes, allModules: allModules)
+        try storeCache(with: configuration, updatedModuleHashes: updatedModuleHashes)
     }
     
     private func findPackageFiles() throws -> [File] {
@@ -106,6 +107,18 @@ struct TestsDetector: ParsableCommand {
     }
 
     // TODO: Refactor to avoid duplication
+    private func getTestModuleHashes(from moduleHashes: [String: MD5Hash], allModules: [IModule]) -> [String: MD5Hash] {
+        let allTestModules = allModules.filter { $0.isTest }
+        let allTestModulesDict = allTestModules.dictionary
+        let testModuleHashes = moduleHashes.filter {
+            if let module = allTestModulesDict[$0.key], module.isTest {
+                return true
+            }
+            return false
+        }
+        return testModuleHashes
+    }
+
     private func getChangedTestTargets(
         from moduleHashes: [String: MD5Hash],
         currentModuleHashes: [String: MD5Hash],
@@ -127,11 +140,6 @@ struct TestsDetector: ParsableCommand {
         }
         
         if fileManager.fileExists(atPath: cacheFileURL.path()) {
-//            let currentHashesJsonString = try String(contentsOf: cacheFileURL)
-//            guard let currentHashesJsonData = currentHashesJsonString.data(using: .utf8) else { return [] }
-//            
-//            let currentModuleHashes = try JSONSerialization.jsonObject(with: currentHashesJsonData, options: []) as? [String: MD5Hash] ?? [:]
-            
             var testModules: [IModule] = []
             
             testModuleHashes.forEach { (key, value) in
@@ -142,14 +150,8 @@ struct TestsDetector: ParsableCommand {
                 }
             }
             
-            try fileManager.removeItem(at: cacheFileURL)
-            let jsonData = try JSONSerialization.data(withJSONObject: testModuleHashes, options: .prettyPrinted)
-            try jsonData.write(to: cacheFileURL)
-            
             return testModules
         } else {
-//            let jsonData = try JSONSerialization.data(withJSONObject: testModuleHashes, options: .prettyPrinted)
-//            try jsonData.write(to: cacheFileURL)
             return allTestModules
         }
     }
