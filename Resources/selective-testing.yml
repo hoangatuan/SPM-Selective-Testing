@@ -1,3 +1,6 @@
+cache_repo:
+  local: "/Users/tuanhoang/Desktop/Cache"
+  remote: ""
 arguments:
 - -project
 - ./iMovie/iMovie.xcodeproj

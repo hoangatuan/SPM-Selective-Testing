@@ -7,10 +7,21 @@
 
 import Foundation
 
-struct Configuration {
+struct CacheConfiguration: Codable {
+    let local: String?
+    let remote: String?
+
+    var isLocal: Bool {
+        return local != nil
+    }
+}
+
+struct Configuration: Codable {
     let testCommandArguments: [String]
-    
+    let cacheConfiguration: CacheConfiguration
+
     enum CodingKeys: String, CodingKey {
         case testCommandArguments = "arguments"
+        case cacheConfiguration = "cache_repo"
     }
 }
