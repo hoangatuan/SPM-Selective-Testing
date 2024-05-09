@@ -2,6 +2,7 @@ import ArgumentParser
 import Foundation
 import ShellOut
 import Files
+import Yams
 
 @main
 struct TestsDetector: ParsableCommand {
@@ -16,7 +17,8 @@ struct TestsDetector: ParsableCommand {
     private var projectPath: String = "/Users/tuanhoang/Documents/TestsDetector/iMovie/iMovie.xcodeproj"
     private var testPlanPath: String = "/Users/tuanhoang/Documents/TestsDetector/iMovie/iMovie.xctestplan"
     private var cachePath = "/TestsCache"
-    
+    private var configurationPath = "/Users/tuanhoang/Documents/TestsDetector/Resources/selective-testing.yml"
+
 #else
     @Option(name: .shortAndLong, help: "The path to .xcproject or .xcworkspace")
     private var projectPath: String
@@ -27,7 +29,11 @@ struct TestsDetector: ParsableCommand {
     
     func run() throws {
         FileManager.default.changeCurrentDirectoryPath(rootPath)
-        
+
+        guard let configuration = try loadConfiguration() else {
+            throw TestDetectorError.configurationNotFound
+        }
+
         var allModules: [IModule] = []
         
         // Find all local modules
@@ -53,18 +59,29 @@ struct TestsDetector: ParsableCommand {
             modules: allModules
         )
 
+        // Get current hashes
+        let currentModuleHashes = try fetchCache(with: configuration)
+
         // Generate module hashes
         let moduleHashes = try moduleHasher.generateHash()
         
         // Find changed test targets
-        let testTargets = try getChangedTestTargets(from: moduleHashes, allModules: allModules).map { $0.name }
+        let testTargets = try getChangedTestTargets(from: moduleHashes, currentModuleHashes: currentModuleHashes, allModules: allModules).map { $0.name }
         
         debugPrint(testTargets)
         
+        // Update test plan
         var testplan = try TestPlanGenerator.readTestPlan(filePath: testPlanPath)
         TestPlanGenerator.updateTestPlanTargets(testPlan: &testplan, affectedTargets: Set(testTargets))
         try TestPlanGenerator.writeTestPlan(testplan, filePath: testPlanPath)
         debugPrint(testplan)
+
+        // Run test
+        
+        try shellOut(to: "xcodebuild", arguments: configuration.testCommandArguments)
+        
+        // Store cache
+        
     }
     
     private func findPackageFiles() throws -> [File] {
@@ -76,9 +93,24 @@ struct TestsDetector: ParsableCommand {
         }
         return files
     }
-    
+
+    private func loadConfiguration() throws -> Configuration? {
+        guard let data = FileManager.default.contents(atPath: configurationPath) else { return nil }
+
+        do {
+            let configuration = try YAMLDecoder().decode(Configuration.self, from: data)
+            return configuration
+        } catch {
+            throw TestDetectorError.configurationInvalid
+        }
+    }
+
     // TODO: Refactor to avoid duplication
-    private func getChangedTestTargets(from moduleHashes: [String: MD5Hash], allModules: [IModule]) throws -> [IModule] {
+    private func getChangedTestTargets(
+        from moduleHashes: [String: MD5Hash],
+        currentModuleHashes: [String: MD5Hash],
+        allModules: [IModule]
+    ) throws -> [IModule] {
         let directoryURL = URL(fileURLWithPath: fileManager.currentDirectoryPath)
         let cacheURL = directoryURL.appendingPathComponent(cachePath)
         try fileManager.createDirectory(at: cacheURL, withIntermediateDirectories: true)
@@ -95,10 +127,10 @@ struct TestsDetector: ParsableCommand {
         }
         
         if fileManager.fileExists(atPath: cacheFileURL.path()) {
-            let currentHashesJsonString = try String(contentsOf: cacheFileURL)
-            guard let currentHashesJsonData = currentHashesJsonString.data(using: .utf8) else { return [] }
-            
-            let currentModuleHashes = try JSONSerialization.jsonObject(with: currentHashesJsonData, options: []) as? [String: MD5Hash] ?? [:]
+//            let currentHashesJsonString = try String(contentsOf: cacheFileURL)
+//            guard let currentHashesJsonData = currentHashesJsonString.data(using: .utf8) else { return [] }
+//            
+//            let currentModuleHashes = try JSONSerialization.jsonObject(with: currentHashesJsonData, options: []) as? [String: MD5Hash] ?? [:]
             
             var testModules: [IModule] = []
             
@@ -116,10 +148,46 @@ struct TestsDetector: ParsableCommand {
             
             return testModules
         } else {
-            let jsonData = try JSONSerialization.data(withJSONObject: testModuleHashes, options: .prettyPrinted)
-            try jsonData.write(to: cacheFileURL)
+//            let jsonData = try JSONSerialization.data(withJSONObject: testModuleHashes, options: .prettyPrinted)
+//            try jsonData.write(to: cacheFileURL)
             return allTestModules
         }
+    }
+
+    private func fetchCache(with configuration: Configuration) throws -> [String: MD5Hash] {
+        let currentBranchName = try GitUtil.getCurrentBranch()
+
+        if configuration.cacheConfiguration.isLocal {
+            let localURL = URL(fileURLWithPath: configuration.cacheConfiguration.local!)
+                .appendingPathComponent("TestsCache")
+                .appendingPathComponent(currentBranchName).appendingPathComponent(filename)
+
+            let cacheFileURL = localURL.appendingPathComponent(filename)
+            let currentHashesJsonString = try String(contentsOf: cacheFileURL)
+            guard let currentHashesJsonData = currentHashesJsonString.data(using: .utf8) else { return [:] }
+
+            let currentModuleHashes = try JSONSerialization.jsonObject(with: currentHashesJsonData, options: []) as? [String: MD5Hash] ?? [:]
+            return currentModuleHashes
+        }
+
+        return [:]
+    }
+
+    private func storeCache(with configuration: Configuration, updatedModuleHashes: [String: MD5Hash]) throws {
+
+        let currentBranchName = try GitUtil.getCurrentBranch()
+
+        if configuration.cacheConfiguration.isLocal {
+            let localURL = URL(fileURLWithPath: configuration.cacheConfiguration.local!).appendingPathComponent("TestsCache").appendingPathComponent(currentBranchName)
+            try? fileManager.createDirectory(at: localURL, withIntermediateDirectories: true)
+            let cacheFileURL = localURL.appendingPathComponent(filename)
+
+            try? fileManager.removeItem(at: cacheFileURL)
+            let jsonData = try JSONSerialization.data(withJSONObject: updatedModuleHashes, options: .prettyPrinted)
+            try jsonData.write(to: cacheFileURL)
+            return
+        }
+
     }
 }
 
