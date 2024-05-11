@@ -37,67 +37,71 @@ struct TestsDetector: ParsableCommand {
         guard let configuration = try loadConfiguration() else {
             throw TestDetectorError.configurationNotFound
         }
-//        
-//        var testplan = try TestPlanGenerator.readTestPlan(filePath: testPlanPath)
-//        
-//        var allModules: [IModule] = []
-//        
-//        // 2. Find all local modules
-//        let packageFiles = try! findPackageFiles()
-//        let modules = try packageFiles.compactMap { file -> [Module]? in
-//            guard let url = file.parent?.path else { return nil }
-//            let reader = DependenciesReader(packageRootDirectoryPath: url)
-//            let modules = try reader.readDependencies()
-//            return modules
-//        }.flatMap { $0 }
-//        
-//        // 3. Find all remote modules
-//        let projectFileURL = URL(fileURLWithPath: projectPath)
-//        let projectType = try ProjectType(fileURL: projectFileURL)
-//        let project = try projectType.project(fileURL: projectFileURL)
-//        let packages: [Package] = try project.packages()
-//        let remoteModules = packages.map { $0.modules }.compactMap { $0 }.flatMap { $0 }
-//        
-//        allModules += modules
-//        allModules += remoteModules
-//        
-//        // 4. Get current hashes
-//        let currentModuleHashes = try fetchCache(with: configuration)
-//        
-//        // Generate module hashes
-//        let moduleHasher = ModuleHasher(modules: allModules)
-//        let allModuleHashes = try moduleHasher.generateHash()
-//        let enabledTestModules = testplan.testTargets.filter { $0.enabled ?? true }.map(\.target.name)
-//        let enabledTestModuleHashes = allModuleHashes.filter { enabledTestModules.contains($0.key) }
-//        
-//        // Find changed test targets
-//        let testTargets = try getChangedTestTargets(from: enabledTestModuleHashes, currentModuleHashes: currentModuleHashes, allModules: allModules).map { $0.name }
-//
-//        debugPrint(testTargets)
-//        
-//        if testTargets.isEmpty {
-//            print("No test targets need to be run")
-//            return
-//        }
-//        
-//        // Update test plan
-//        TestPlanGenerator.updateTestPlanTargets(testPlan: &testplan, affectedTargets: Set(testTargets))
-//        try TestPlanGenerator.writeTestPlan(testplan, filePath: testPlanPath)
-//
-//        // Run test
-//        try shellOut(to: "xcodebuild", arguments: configuration.testCommandArguments)
-//        
-//        // Store cache
-//        try storeCache(with: configuration, updatedModuleHashes: enabledTestModuleHashes)
-
+        
         let remoteCache = RemoteCache(
             remote: URL(string: configuration.cacheConfiguration.remote!)!,
             localPath: configuration.cacheConfiguration.local,
             branch: try GitUtil.getCurrentBranch()
         )
 
-        let hashes = try remoteCache.fetchRemoteCache()
-        debugPrint(hashes)
+        var testplan = try TestPlanGenerator.readTestPlan(filePath: testPlanPath)
+        
+        var allModules: [IModule] = []
+        
+        // 2. Find all local modules
+        let packageFiles = try! findPackageFiles()
+        let modules = try packageFiles.compactMap { file -> [Module]? in
+            guard let url = file.parent?.path else { return nil }
+            let reader = DependenciesReader(packageRootDirectoryPath: url)
+            let modules = try reader.readDependencies()
+            return modules
+        }.flatMap { $0 }
+        
+        // 3. Find all remote modules
+        let projectFileURL = URL(fileURLWithPath: projectPath)
+        let projectType = try ProjectType(fileURL: projectFileURL)
+        let project = try projectType.project(fileURL: projectFileURL)
+        let packages: [Package] = try project.packages()
+        let remoteModules = packages.map { $0.modules }.compactMap { $0 }.flatMap { $0 }
+        
+        allModules += modules
+        allModules += remoteModules
+        
+        // 4. Get current hashes
+        /// Remote
+        let currentModuleHashes = try remoteCache.fetchRemoteCache()
+        /// local
+//        let currentModuleHashes = try fetchCache(with: configuration)
+        
+        // Generate module hashes
+        let moduleHasher = ModuleHasher(modules: allModules)
+        let allModuleHashes = try moduleHasher.generateHash()
+        let enabledTestModules = testplan.testTargets.filter { $0.enabled ?? true }.map(\.target.name)
+        let enabledTestModuleHashes = allModuleHashes.filter { enabledTestModules.contains($0.key) }
+        
+        // Find changed test targets
+        let testTargets = try getChangedTestTargets(from: enabledTestModuleHashes, currentModuleHashes: currentModuleHashes, allModules: allModules).map { $0.name }
+
+        debugPrint(testTargets)
+        
+        if testTargets.isEmpty {
+            print("No test targets need to be run")
+            return
+        }
+        
+        // Update test plan
+        TestPlanGenerator.updateTestPlanTargets(testPlan: &testplan, affectedTargets: Set(testTargets))
+        try TestPlanGenerator.writeTestPlan(testplan, filePath: testPlanPath)
+
+        // Run test
+        try shellOut(to: "xcodebuild", arguments: configuration.testCommandArguments)
+        
+        // Store cache
+        /// Local
+//        try storeCache(with: configuration, updatedModuleHashes: enabledTestModuleHashes)
+        /// Remote
+        try remoteCache.update(hashes: enabledTestModuleHashes)
+
     }
     
     private func findPackageFiles() throws -> [File] {

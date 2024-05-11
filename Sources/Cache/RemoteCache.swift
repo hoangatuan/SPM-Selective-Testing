@@ -48,22 +48,33 @@ final class RemoteCache {
         return currentModuleHashes
     }
 
+    func update(hashes: [String: MD5Hash]) throws {
+        let folderURL = URL(fileURLWithPath: localPath + "/\(branch)")
+        try? fileManager.createDirectory(at: folderURL, withIntermediateDirectories: true)
+        let cacheFileURL = folderURL.appendingPathComponent("TestsCache.json")
+        try? fileManager.removeItem(at: cacheFileURL)
+        let jsonData = try JSONSerialization.data(withJSONObject: hashes, options: .prettyPrinted)
+        try jsonData.write(to: cacheFileURL)
+        
+        try push()
+    }
+    
     func clone() throws {
-        try? fileManager.createDirectory(at: URL(string: localPath)!, withIntermediateDirectories: true)
+        try? fileManager.removeItem(at: URL(fileURLWithPath: localPath))
         let gitCommand = ShellOutCommand.gitClone(url: remote, to: localPath)
         try shellOut(to: gitCommand)
     }
 
     func pull() throws {
         let pullCommand = ShellOutCommand.gitPull()
-        try shellOut(to: pullCommand)
+        try shellOut(to: pullCommand, at: localPath)
     }
 
-    func push() throws -> String {
+    func push() throws {
         let commitCommand = ShellOutCommand.gitCommit(message: "Update hashes of branch \(branch)")
-        try shellOut(to: commitCommand)
+        try shellOut(to: commitCommand, at: localPath)
         let pushCommand = ShellOutCommand.gitPush()
-        return try shellOut(to: pushCommand)
+        try shellOut(to: pushCommand, at: localPath)
     }
 
 }
