@@ -8,11 +8,11 @@
 import Foundation
 
 struct CacheConfiguration: Codable {
-    let local: String?
+    let local: String
     let remote: String?
 
     var isLocal: Bool {
-        return local != nil
+        return remote != nil
     }
 }
 

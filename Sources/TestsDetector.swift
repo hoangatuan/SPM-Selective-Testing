@@ -29,12 +29,21 @@ struct TestsDetector: ParsableCommand {
     
     func run() throws {
         FileManager.default.changeCurrentDirectoryPath(rootPath)
-        
+
+        let branchName = try GitUtil.getCurrentBranch()
+        debugPrint("Tuanha24: \(branchName)")
+
         // 1. Load configuration
         guard let configuration = try loadConfiguration() else {
             throw TestDetectorError.configurationNotFound
         }
         
+        let remoteCache = RemoteCache(
+            remote: URL(string: configuration.cacheConfiguration.remote!)!,
+            localPath: configuration.cacheConfiguration.local,
+            branch: try GitUtil.getCurrentBranch()
+        )
+
         var testplan = try TestPlanGenerator.readTestPlan(filePath: testPlanPath)
         
         var allModules: [IModule] = []
@@ -59,7 +68,10 @@ struct TestsDetector: ParsableCommand {
         allModules += remoteModules
         
         // 4. Get current hashes
-        let currentModuleHashes = try fetchCache(with: configuration)
+        /// Remote
+        let currentModuleHashes = try remoteCache.fetchRemoteCache()
+        /// local
+//        let currentModuleHashes = try fetchCache(with: configuration)
         
         // Generate module hashes
         let moduleHasher = ModuleHasher(modules: allModules)
@@ -85,7 +97,11 @@ struct TestsDetector: ParsableCommand {
         try shellOut(to: "xcodebuild", arguments: configuration.testCommandArguments)
         
         // Store cache
-        try storeCache(with: configuration, updatedModuleHashes: enabledTestModuleHashes)
+        /// Local
+//        try storeCache(with: configuration, updatedModuleHashes: enabledTestModuleHashes)
+        /// Remote
+        try remoteCache.update(hashes: enabledTestModuleHashes)
+
     }
     
     private func findPackageFiles() throws -> [File] {
@@ -138,8 +154,8 @@ struct TestsDetector: ParsableCommand {
         let currentBranchName = try GitUtil.getCurrentBranch()
 
         if configuration.cacheConfiguration.isLocal {
-            let localURL = URL(fileURLWithPath: configuration.cacheConfiguration.local!)
-                .appendingPathComponent(".testsCache")
+            let localURL = URL(fileURLWithPath: configuration.cacheConfiguration.local)
+//                .appendingPathComponent(".testsCache")
                 .appendingPathComponent(currentBranchName)
 
             let cacheFileURL = localURL.appendingPathComponent(filename)
@@ -157,8 +173,8 @@ struct TestsDetector: ParsableCommand {
         let currentBranchName = try GitUtil.getCurrentBranch()
 
         if configuration.cacheConfiguration.isLocal {
-            let localURL = URL(fileURLWithPath: configuration.cacheConfiguration.local!)
-                .appendingPathComponent(".testsCache")
+            let localURL = URL(fileURLWithPath: configuration.cacheConfiguration.local)
+//                .appendingPathComponent(".testsCache")
                 .appendingPathComponent(currentBranchName)
             try? fileManager.createDirectory(at: localURL, withIntermediateDirectories: true)
             let cacheFileURL = localURL.appendingPathComponent(filename)
