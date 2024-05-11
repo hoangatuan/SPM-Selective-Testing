@@ -1,6 +1,8 @@
 
 import Foundation
+import ShellOut
 
+// https://developer.apple.com/documentation/packagedescription
 
 public struct DependenciesReader {
     private let packageRootDirectoryPath: String
@@ -14,7 +16,7 @@ public struct DependenciesReader {
         self.decoder = decoder
     }
     
-    public func readDependencies() throws -> [Module] {
+    public func readDependencies() throws -> [LocalModule] {
         let jsonString = try dumpPackage()
         let jsonData = jsonString.data(using: .utf8)!
         return try decoder
@@ -23,10 +25,10 @@ public struct DependenciesReader {
     }
     
     private func dumpPackage() throws -> String {
-        try Command.run(
-            launchPath: "/usr/bin/env",
-            currentDirectoryPath: packageRootDirectoryPath,
-            arguments: ["swift", "package", "dump-package"]
+        try shellOut(
+            to: "/usr/bin/env",
+            arguments: ["swift", "package", "dump-package"],
+            at: packageRootDirectoryPath
         )
     }
 }
@@ -68,12 +70,12 @@ private struct DumpPackageResponse: Decodable {
 }
 
 extension DumpPackageResponse {
-    func toModule() -> [Module] {
+    func toModule() -> [LocalModule] {
         targets.map { target in
             let byNameDependencies = target.dependencies.compactMap { $0.byName?.compactMap { $0 }.first }
             let productDependencies = target.dependencies.compactMap { $0.product?.compactMap { $0 }.first }
             let dependencies = byNameDependencies + productDependencies
-            return Module(
+            return LocalModule(
                 name: target.name,
                 type: target.type,
                 dependencies: dependencies,

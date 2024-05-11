@@ -3,7 +3,13 @@
 
 import Foundation
 
-class TestPlanGenerator {
+protocol TestPlanGeneratorProtocol {
+    static func readTestPlan(filePath: String) throws -> TestPlanModel
+    static func writeTestPlan(_ testPlan: TestPlanModel, filePath: String) throws
+    static func updateTestPlanTargets(testPlan: TestPlanModel, affectedTargets: Set<String>) -> TestPlanModel
+}
+
+enum TestPlanGenerator: TestPlanGeneratorProtocol {
     static func readTestPlan(filePath: String) throws -> TestPlanModel {
         let url = URL(fileURLWithPath: filePath)
         let data = try Data(contentsOf: url)
@@ -21,8 +27,9 @@ class TestPlanGenerator {
         try updatedData.write(to: url)
     }
     
-    static func updateTestPlanTargets(testPlan: inout TestPlanModel, affectedTargets: Set<String>) {
-        testPlan.testTargets = testPlan.testTargets.map { testTarget in
+    static func updateTestPlanTargets(testPlan: TestPlanModel, affectedTargets: Set<String>) -> TestPlanModel {
+        var updatedTestPlan = testPlan
+        updatedTestPlan.testTargets = testPlan.testTargets.map { testTarget in
             let isEnabled = affectedTargets.contains(testTarget.target.name)
             return TestTarget(
                 parallelizable: testTarget.parallelizable,
@@ -32,5 +39,7 @@ class TestPlanGenerator {
                 enabled: isEnabled
             )
         }
+        
+        return updatedTestPlan
     }
 }

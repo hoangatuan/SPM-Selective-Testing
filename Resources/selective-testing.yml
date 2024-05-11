@@ -1,6 +1,6 @@
 cache_repo:
   local: "/Users/tuanhoang/Desktop/Cache"
-  remote: "https://github.com/hoangatuan/TestsCache.git"
+#  remote: "https://github.com/hoangatuan/TestsCache.git"
 arguments:
 - -project
 - ./iMovie.xcodeproj

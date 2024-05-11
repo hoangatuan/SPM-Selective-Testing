@@ -1,6 +1,6 @@
-
-
-// https://github.com/FelixHerrmann/swift-package-list
+//
+//  Created by Tuan Hoang Anh
+//
 
 import Foundation
 
@@ -9,7 +9,7 @@ struct Checkouts: Directory {
 }
 
 extension Checkouts {
-    func modules(checkoutURL: URL) throws -> [Module]? {
+    func modules(checkoutURL: URL) throws -> [LocalModule]? {
         let checkoutName = checkoutURL.packageIdentity
         let checkoutPath = url.appendingPathComponent(checkoutName)
         
