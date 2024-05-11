@@ -3,7 +3,7 @@
 
 ![Static Badge](https://img.shields.io/badge/status-active-brightgreen)
 
-This is a tool to help you run only the tests that have changed since the last successful test run, instead of re-run all the tests everytime.
+This is a tool to help you run only the tests that have changed since the last successful test run, instead of re-run all the tests every time.
 
 <img src=Resources/result.png width=800/>
 
@@ -17,22 +17,23 @@ This is a tool to help you run only the tests that have changed since the last s
 
 ## Why
 
-As the project grows, more and more tests are added to the project. It makes the time to run all the tests increase drammatically.   
-As your team grow, more and more number of times your team and your CI need to run the tests.   
-Especially on CI, we normally clean and re-run all the tests, regardless of the changes.   
-With `spm-test-selective", we can run only the tests that have changed since the last successful test run, which will reduce the the time to run the tests significantly. 🚀
+As the project grows, more and more tests are added. It makes **the time to run all the tests increase dramatically**.   
+As your team grows, more and more times your team and your CI need to run the tests.   
+Especially on CI, we normally clean and re-run all the tests, **regardless of the changes**.   
+With `spm-test-selective`, we can **run only the tests that have changed since the last successful test run**, reducing the time to run the tests significantly. 🚀
 
 ## Installation
 
-Currently this project is still in development phrase, not ready for production.
+This project is still in the development phase, and not ready for production.
 
 ## Usage
 
-The most simple way to run the leaks checking process is:
-
 ```bash
-    testselective init
-    testselective $PROJECT-PATH $TEST-PLAN-PATH
+    // Init a default configuration for your project
+    spm-test-selective init
+
+    // Perform selective testing
+    spm-test-selective $PROJECT-PATH $TEST-PLAN-PATH
 ```
 
 ## How it works
@@ -42,9 +43,9 @@ The most simple way to run the leaks checking process is:
 1. Find all SPM modules in the project
 2. Generate hashes for all SPM modules
 3. For each module, compare its current hash with its cache hash.
-4. If any module's hash is different from its cache hash, add that module to the test plan. Otherwise, disable that module in test plan.
-5. Run test with the test plan
-6. If test successfully, update cache.
+4. If any module's hash is different from its cache hash, add that module to the test plan. Otherwise, disable that module in the test plan.
+5. Run tests with the test plan.
+6. If run tests successfully, update the cache.
 
 ## Publication
 
