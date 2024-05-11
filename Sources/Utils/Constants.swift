@@ -11,4 +11,6 @@ enum Constants {
     static let fileName = "test-selective.conf"
     static let `extension` = "yml"
     static let fileNameWithExtension = "\(fileName).\(`extension`)"
+    
+    static let cacheFileName = "TestsCache.json"
 }

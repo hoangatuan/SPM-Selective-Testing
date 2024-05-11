@@ -10,4 +10,6 @@ import Foundation
 enum TestDetectorError: Error {
     case configurationNotFound
     case configurationInvalid
+    case testPlanInvalid
+    case dataProcessingError(message: String)
 }

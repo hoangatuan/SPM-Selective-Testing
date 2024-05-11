@@ -7,14 +7,15 @@
 
 import Foundation
 
-typealias ModuleName = String
-typealias MD5Hash = String
-
 enum ModuleHasherError: Error {
     case moduleNotFound
 }
 
-final class ModuleHasher {
+protocol ModuleHashing {
+    func generateHash() throws -> [ModuleName: MD5Hash]
+}
+
+final class ModuleHasher: ModuleHashing {
     
     private let modules: [IModule]
     private var dic: [ModuleName: MD5Hash] = [:]

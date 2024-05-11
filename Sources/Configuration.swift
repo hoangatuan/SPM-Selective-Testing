@@ -12,7 +12,7 @@ struct CacheConfiguration: Codable {
     let remote: String?
 
     var isLocal: Bool {
-        return remote != nil
+        return remote == nil
     }
 }
 

@@ -66,3 +66,9 @@ struct TestTarget: Codable {
     var target: Target
     var enabled: Bool?
 }
+
+extension TestPlanModel {
+    var enabledModules: [TestTarget] {
+        return testTargets.filter { $0.enabled ?? true }
+    }
+}
