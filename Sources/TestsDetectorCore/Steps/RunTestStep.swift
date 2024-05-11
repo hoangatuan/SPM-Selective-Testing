@@ -24,8 +24,21 @@ struct RunTest: TestDetectorStep {
             print("No test targets need to be run")
             return .none
         }
-        
+        logUnaffactedTestTargets(state: state)
         try shellOut(to: "xcodebuild", arguments: state.configuration?.testCommandArguments ?? [])
         return .none
+    }
+    
+    private func logUnaffactedTestTargets(state: TestDetectorState) {
+        for testTarget in unaffectedTestTarget(state: state) {
+            log(message: "Skip running test target: \(testTarget)")
+        }
+    }
+    
+    private func unaffectedTestTarget(state: TestDetectorState) -> [String] {
+        guard let originTestPlan = state.originTestPlan, let updatedTestPlan = state.updatedTestPlan else { return [] }
+        let originTestTargets = originTestPlan.enabledModules.map(\.target.name)
+        let updatedTestTargets = updatedTestPlan.enabledModules.map(\.target.name)
+        return originTestTargets.filter { !updatedTestTargets.contains($0) }
     }
 }

@@ -8,6 +8,9 @@ let package = Package(
     platforms: [
         .macOS(.v13)
     ],
+    products: [
+        .executable(name: "testsdetector", targets: ["TestsDetector"])
+    ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.2.0"),
         .package(url: "https://github.com/JohnSundell/ShellOut.git", from: "2.0.0"),
@@ -16,9 +19,15 @@ let package = Package(
     ],
     targets: [
         .executableTarget(
-            name: "TestDetector",
+            name: "TestsDetector",
             dependencies: [
+                "TestsDetectorCore",
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
+            ]
+        ),
+        .target(
+            name: "TestsDetectorCore",
+            dependencies: [
                 "ShellOut",
                 "Files",
                 "Yams"

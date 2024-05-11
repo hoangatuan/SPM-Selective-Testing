@@ -7,11 +7,18 @@
 
 import Foundation
 
-struct RunOptions {
+public struct RunOptions {
     let rootPath: String
     let projectPath: String
     let configurationPath: String
     let testPlanPath: String
+    
+    public init(rootPath: String, projectPath: String, configurationPath: String, testPlanPath: String) {
+        self.rootPath = rootPath
+        self.projectPath = projectPath
+        self.configurationPath = configurationPath
+        self.testPlanPath = testPlanPath
+    }
 }
 
 final class TestDetectorState {
@@ -56,7 +63,6 @@ extension TestDetectorState {
         case .hashesCalculated(let modulesHashes):
             self.modulesHashes = modulesHashes
         case .affectedTestTargetsDiscovered(let affectedTestTargets):
-            debugPrint("affected test targets: \(affectedTestTargets)")
             self.affectedTestTargets = affectedTestTargets
         case .testPlanUpdated(let testPlanModel):
             self.updatedTestPlan = testPlanModel
