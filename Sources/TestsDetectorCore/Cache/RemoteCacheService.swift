@@ -8,13 +8,6 @@
 import Foundation
 import ShellOut
 
-enum GitUtil {
-    static func getCurrentBranch() throws -> String {
-//        return try shellOut(to: "git", arguments: ["branch", "--show-current"])
-        return "develop"
-    }
-}
-
 final class RemoteCacheService: CacheServiceProtocol {
     private let remote: URL
     private let localPath: String

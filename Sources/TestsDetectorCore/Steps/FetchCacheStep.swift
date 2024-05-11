@@ -9,8 +9,14 @@ import Foundation
 
 struct FetchCacheStep: TestDetectorStep {
         
+    let gitUtil: GitUtilProtocol.Type
     let cacheServiceFactory: CacheServiceFactoryProtocol.Type
-    init(cacheServiceFactory: CacheServiceFactoryProtocol.Type = CacheServiceFactory.self) {
+    
+    init(
+        gitUtil: GitUtilProtocol.Type = GitUtil.self,
+        cacheServiceFactory: CacheServiceFactoryProtocol.Type = CacheServiceFactory.self
+    ) {
+        self.gitUtil = gitUtil
         self.cacheServiceFactory = cacheServiceFactory
     }
     
@@ -19,8 +25,7 @@ struct FetchCacheStep: TestDetectorStep {
             throw TestDetectorError.dataProcessingError(message: "Should load configuration first")
         }
         
-        // To update
-        let branch = try GitUtil.getCurrentBranch()
+        let branch = try gitUtil.getCurrentBranch(at: state.options.rootPath)
         
         let cacheService = cacheServiceFactory.makeCacheService(
             cacheConfig: configuration.cacheConfiguration,
