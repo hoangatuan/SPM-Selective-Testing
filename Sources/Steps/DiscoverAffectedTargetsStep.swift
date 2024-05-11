@@ -28,6 +28,7 @@ struct DiscoverAffectedTargetsStep: TestDetectorStep {
             allModules: state.allModules
         )
         
+        log(message: "Affected test targets: \(affectedTestTargets.map(\.name))")
         return .affectedTestTargetsDiscovered(affectedTestTargets)
     }
     

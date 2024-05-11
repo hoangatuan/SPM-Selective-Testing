@@ -30,6 +30,7 @@ final class TestsDetectorHandler {
     
     func run() throws {
         for step in steps {
+            log(message: "Start running step: \(step.description)...")
             let changes = try step.run(with: state)
             state.apply(changes)
         }

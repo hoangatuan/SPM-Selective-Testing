@@ -6,9 +6,13 @@
 //
 
 import Foundation
-import Yams
-import ShellOut
 
 protocol TestDetectorStep {
     func run(with state: TestDetectorState) throws -> TestDetectorState.Change
+}
+
+extension TestDetectorStep {
+    var description: String {
+        return String(describing: Self.self)
+    }
 }

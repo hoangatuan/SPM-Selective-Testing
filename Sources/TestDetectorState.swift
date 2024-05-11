@@ -56,7 +56,6 @@ extension TestDetectorState {
         case .hashesCalculated(let modulesHashes):
             self.modulesHashes = modulesHashes
         case .affectedTestTargetsDiscovered(let affectedTestTargets):
-            debugPrint("affected test targets: \(affectedTestTargets)")
             self.affectedTestTargets = affectedTestTargets
         case .testPlanUpdated(let testPlanModel):
             self.updatedTestPlan = testPlanModel
