@@ -22,7 +22,7 @@ struct LoadConfigurationStep: TestDetectorStep {
         }
         
         do {
-            let configuration = try YAMLDecoder().decode(Configuration.self, from: data)
+            let configuration = try YAMLDecoder().decode(TestSelectiveConfiguration.self, from: data)
             return .configurationLoaded(configuration)
         } catch {
             throw TestDetectorError.configurationInvalid

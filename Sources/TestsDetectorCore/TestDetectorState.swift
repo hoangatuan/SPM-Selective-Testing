@@ -13,17 +13,22 @@ public struct RunOptions {
     let configurationPath: String
     let testPlanPath: String
     
-    public init(rootPath: String, projectPath: String, configurationPath: String, testPlanPath: String) {
-        self.rootPath = rootPath
+    public init(
+        rootPath: String?,
+        projectPath: String,
+        configurationPath: String?,
+        testPlanPath: String
+    ) {
+        self.rootPath = rootPath ?? FileManager.default.currentDirectoryPath
         self.projectPath = projectPath
-        self.configurationPath = configurationPath
+        self.configurationPath = configurationPath ?? FileManager.default.currentDirectoryPath.appending(Constants.fileNameWithExtension)
         self.testPlanPath = testPlanPath
     }
 }
 
 final class TestDetectorState {
     var options: RunOptions
-    var configuration: Configuration?
+    var configuration: TestSelectiveConfiguration?
     var allModules: [IModule] = []
     var originTestPlan: TestPlanModel?
     var updatedTestPlan: TestPlanModel?
@@ -38,7 +43,7 @@ final class TestDetectorState {
 
 extension TestDetectorState {
     enum Change {
-        case configurationLoaded(Configuration)
+        case configurationLoaded(TestSelectiveConfiguration)
         case modulesResolved([IModule])
         case testPlanParsed(TestPlanModel)
         case cacheFetched(Cache)

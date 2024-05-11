@@ -7,10 +7,10 @@
 
 import Foundation
 
-enum Constants {
-    static let fileName = "test-selective.conf"
+public enum Constants {
+    static let fileName = ".test-selective.conf"
     static let `extension` = "yml"
-    static let fileNameWithExtension = "\(fileName).\(`extension`)"
+    public static let fileNameWithExtension = "\(fileName).\(`extension`)"
     
     static let cacheFileName = "TestsCache.json"
 }
