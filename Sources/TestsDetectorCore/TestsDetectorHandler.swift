@@ -7,12 +7,12 @@
 
 import Foundation
 
-final class TestsDetectorHandler {
+public final class TestsDetectorHandler {
     
     private let steps: [TestDetectorStep]
     private var state: TestDetectorState
     
-    init(options: RunOptions) {
+    public init(options: RunOptions) {
         self.state = .init(options: options)
         self.steps =  [
             LoadConfigurationStep(),
@@ -28,7 +28,7 @@ final class TestsDetectorHandler {
         ]
     }
     
-    func run() throws {
+    public func run() throws {
         for step in steps {
             log(message: "Start running step: \(step.description)...")
             let changes = try step.run(with: state)

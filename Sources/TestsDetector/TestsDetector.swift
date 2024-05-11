@@ -1,8 +1,7 @@
+
 import ArgumentParser
 import Foundation
-import ShellOut
-import Files
-import Yams
+import TestsDetectorCore
 
 @main
 struct TestsDetector: ParsableCommand {
