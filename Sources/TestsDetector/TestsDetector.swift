@@ -12,7 +12,7 @@ struct TestSelectiveCommand: AsyncParsableCommand {
             Init.self,
             Run.self,
         ],
-        defaultSubcommand: Init.self
+        defaultSubcommand: Run.self
     )
 }
 

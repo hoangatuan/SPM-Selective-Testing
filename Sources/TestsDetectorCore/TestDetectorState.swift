@@ -21,7 +21,7 @@ public struct RunOptions {
     ) {
         self.rootPath = rootPath ?? FileManager.default.currentDirectoryPath
         self.projectPath = projectPath
-        self.configurationPath = configurationPath ?? FileManager.default.currentDirectoryPath.appending(Constants.fileNameWithExtension)
+        self.configurationPath = configurationPath ?? FileManager.default.currentDirectoryPath.appending("/\(Constants.fileNameWithExtension)")
         self.testPlanPath = testPlanPath
     }
 }

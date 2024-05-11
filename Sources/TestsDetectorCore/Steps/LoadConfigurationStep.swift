@@ -12,11 +12,12 @@ struct LoadConfigurationStep: TestDetectorStep {
     
     let fileManager: FileManager
     
-    init(fileManager: FileManager = FileManager()) {
+    init(fileManager: FileManager = FileManager.default) {
         self.fileManager = fileManager
     }
     
     func run(with state: TestDetectorState) throws -> TestDetectorState.Change {
+        log(message: "Try to load configuration at \(state.options.configurationPath)...")
         guard let data = fileManager.contents(atPath: state.options.configurationPath) else {
             throw TestDetectorError.configurationNotFound
         }

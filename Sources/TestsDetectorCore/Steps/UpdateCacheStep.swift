@@ -40,6 +40,7 @@ struct UpdateCache: TestDetectorStep {
         )
         
         try cacheService.update(with: enabledTargetHashes)
+        log(message: "Cache has been updated. Cache file url: \(cacheService.cacheFileURL.absoluteString)", color: .green)
         return .none
     }
 }

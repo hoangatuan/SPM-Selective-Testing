@@ -28,7 +28,7 @@ final class LocalCacheService: CacheServiceProtocol {
             .appendingPathComponent(branch)
     }
     
-    private var cacheFileURL: URL {
+    var cacheFileURL: URL {
         folderURL.appendingPathComponent(Constants.cacheFileName)
     }
     

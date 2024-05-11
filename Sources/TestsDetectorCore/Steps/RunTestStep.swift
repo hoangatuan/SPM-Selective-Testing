@@ -21,9 +21,9 @@ struct RunTest: TestDetectorStep {
         }
         
         if testPlan.enabledModules.isEmpty {
-            print("No test targets need to be run")
             return .none
         }
+        
         logUnaffactedTestTargets(state: state)
         try shellOut(to: "xcodebuild", arguments: state.configuration?.testCommandArguments ?? [])
         return .none
@@ -31,7 +31,7 @@ struct RunTest: TestDetectorStep {
     
     private func logUnaffactedTestTargets(state: TestDetectorState) {
         for testTarget in unaffectedTestTarget(state: state) {
-            log(message: "Skip running test target: \(testTarget)")
+            log(message: "Skip running test target: \(testTarget). ⏭️")
         }
     }
     

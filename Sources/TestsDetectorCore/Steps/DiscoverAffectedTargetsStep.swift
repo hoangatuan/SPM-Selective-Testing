@@ -1,7 +1,4 @@
 //
-//  File.swift
-//  
-//
 //  Created by Tuan Hoang Anh on 11/5/24.
 //
 
@@ -28,7 +25,12 @@ struct DiscoverAffectedTargetsStep: TestDetectorStep {
             allModules: state.allModules
         )
         
-        log(message: "Affected test targets: \(affectedTestTargets.map(\.name))")
+        if cache.isEmpty {
+            log(message: "Not found any cache. Run all the test targets!")
+        } else {
+            log(message: "Affected test targets: \(affectedTestTargets.map(\.name))")
+        }
+        
         return .affectedTestTargetsDiscovered(affectedTestTargets)
     }
     

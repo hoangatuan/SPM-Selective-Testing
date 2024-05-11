@@ -31,7 +31,7 @@ final class RemoteCacheService: CacheServiceProtocol {
             .appendingPathComponent(branch)
     }
     
-    private var cacheFileURL: URL {
+    var cacheFileURL: URL {
         folderURL.appendingPathComponent(Constants.cacheFileName)
     }
 

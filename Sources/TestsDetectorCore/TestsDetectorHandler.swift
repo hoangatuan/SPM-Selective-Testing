@@ -1,7 +1,4 @@
 //
-//  File.swift
-//  
-//
 //  Created by Tuan Hoang Anh on 11/5/24.
 //
 
@@ -30,7 +27,7 @@ public final class TestsDetectorHandler {
     
     public func run() throws {
         for step in steps {
-            log(message: "Start running step: \(step.description)...")
+            log(message: "Start running step: \(step.description)... ")
             let changes = try step.run(with: state)
             state.apply(changes)
         }

@@ -48,6 +48,11 @@ struct Run: ParsableCommand {
             )
         )
         
-        try handler.run()
+        do {
+            try handler.run()
+            log(message: "SUCCESSFULLY!!! 🚀🚀🚀", color: .green)
+        } catch {
+            log(message: "❌ Error occured: \(error.localizedDescription)", color: .red)
+        }
     }
 }

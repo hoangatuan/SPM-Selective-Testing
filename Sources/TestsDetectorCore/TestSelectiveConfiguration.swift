@@ -103,7 +103,7 @@ public extension TestSelectiveConfiguration {
             "\(projectName)",
         ]
 
-        let destination = ["-destination", "platform=iOS Simulator,name=iPhone 15 Plus"]
+        let destination = ["-destination 'platform=iOS Simulator,name=iPhone 15 Plus'"]
 
         return defaultArguments + destination + ["clean"] + ["test"]
     }

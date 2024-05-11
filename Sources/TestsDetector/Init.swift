@@ -14,14 +14,16 @@ struct Init: ParsableCommand {
     )
     
     func run() throws {
-        FileManager.default.changeCurrentDirectoryPath("/Users/tuanhoang/Documents/TestsDetector/iMovie")
         let defaultConfiguration = TestSelectiveConfiguration.generateDefaultCongiruration()
          
         let directory = FileManager.default.currentDirectoryPath
+        let configurationPath = "\(directory)/\(Constants.fileNameWithExtension)"
         FileManager.default.createFile(
-            atPath: "\(directory)/\(Constants.fileNameWithExtension)",
+            atPath: configurationPath,
             contents: defaultConfiguration.asYamlData(),
             attributes: nil
         )
+        
+        log(message: "📄 Configuration file has been created at \(configurationPath).", color: .green)
     }
 }

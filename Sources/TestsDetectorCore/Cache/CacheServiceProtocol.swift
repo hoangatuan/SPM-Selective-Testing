@@ -8,6 +8,8 @@
 import Foundation
 
 protocol CacheServiceProtocol {
+    var cacheFileURL: URL { get }
+    
     func fetch() throws -> Cache
     func update(with cache: Cache) throws
 }
