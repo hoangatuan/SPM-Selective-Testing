@@ -24,15 +24,29 @@ struct RunTest: TestDetectorStep {
             return .none
         }
         
-        logUnaffactedTestTargets(state: state)
+        let startDate = Date()
+        logTestTargets(state: state, updatedTestPlan: testPlan)
         try shellOut(to: "xcodebuild", arguments: state.configuration?.testCommandArguments ?? [])
+        
+        let endDate = Date()
+        let duration = DateInterval(
+            start: startDate,
+            end: endDate
+        ).duration
+        
+        log(message: "Test successfully in \(duration) seconds!!! ✅", color: .green)
+        
         return .none
     }
     
-    private func logUnaffactedTestTargets(state: TestDetectorState) {
+    private func logTestTargets(state: TestDetectorState, updatedTestPlan: TestPlanModel) {
         for testTarget in unaffectedTestTarget(state: state) {
-            log(message: "Skip running test target: \(testTarget). ⏭️")
+            log(message: "Skip running test target: \(testTarget). ⏭️", color: .yellow)
         }
+        
+        let enabledTargets = updatedTestPlan.enabledModules.map(\.target.name)
+        log(message: "Start testing for: \(enabledTargets)...", color: .yellow)
+        
     }
     
     private func unaffectedTestTarget(state: TestDetectorState) -> [String] {

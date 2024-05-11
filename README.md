@@ -1,66 +1,51 @@
 
-# Steps
+# 🔎 SPM Test Selective 
 
-- Click on run test
--> Generate targets dependencies based on Package.resolved ✅
--> Generate hash for all targets. ✅
--> Check if already has a cache file? 
-    + YES: 
-        + Compare the hash of the current targets with the hash in the cache file ✅
-        + Get all the targets that needs to be run ✅
-    + NO: (first run)
-        + Create cache file to store all the hashes ✅ 
-        + All test target must need to be run ✅
--> Run test targets that changed
+![Static Badge](https://img.shields.io/badge/status-active-brightgreen)
 
--> Update cache file with new hashes
--> Return result
+This is a tool to help you run only the tests that have changed since the last successful test run, instead of re-run all the tests everytime.
 
-# TODO
+<img src=Resources/result.png width=800/>
 
-- Add logs
-- Process the xctestrun file to get the coverage
+# Table of Contents
 
-# Note
+- [Why](#why)
+- [Installation](#installation)
+- [Usage](#usage)
+- [How it works](#how-it-works)
+- [Publication](#publication)
 
-- The hash for the target should be calculate by:
-  + The target's attributes (e.g., name, platform, product, etc.).
-  + The target's files
-  + The hash of the target's dependencies
-  + swift version?
-  Ref: https://docs.tuist.io/cloud/hashing.html
+## Why
 
-# Idea
+As the project grows, more and more tests are added to the project. It makes the time to run all the tests increase drammatically.   
+As your team grow, more and more number of times your team and your CI need to run the tests.   
+Especially on CI, we normally clean and re-run all the tests, regardless of the changes.   
+With `spm-test-selective", we can run only the tests that have changed since the last successful test run, which will reduce the the time to run the tests significantly. 🚀
 
-1. Subcommand to init configuration file
-2. subcommand to run the full flow
-3. Subcommand to get the dependencies only
-4. provide a `config.yaml` file to let user define: direct depend framework of main project, excludes targets/test targets, test targets that needs to be run (if empty run all the test targets)
+## Installation
 
-# Edge case to check
+Currently this project is still in development phrase, not ready for production.
 
-- a product contains multiple targets
-- A target that has custom `excludes`
-- A target that has custom `sources`
-- A dependencies of type `framework`   
+## Usage
 
-# Note
+The most simple way to run the leaks checking process is:
 
-- If a target has the path = nil => Swift Package Manager looks for a target's source files at predefined search paths and in a subdirectory with the target's name.
-    The predefined search paths are the following directories under the package root:
-        + `Sources`, `Source`, `src`, and `srcs` for regular targets
-        + `Tests`, `Sources`, `Source`, `src`, and `srcs` for test targets
-        
-- If sources = nil => SPM includes all valid source files in the target's path. Otherwise, Swift Package Manager searches for valid source files recursively inside the path
+```bash
+    testselective init
+    testselective $PROJECT-PATH $TEST-PLAN-PATH
+```
 
-# References
+## How it works
 
-1. Calculate coverages for each targets: https://github.com/ronanociosoig-200/Tuist-Pokedex/blob/master/scripts/readCodeCoverage.swift
-2. https://github.com/grab/cocoapods-binary-cache?tab=readme-ov-file
-3. https://docs.tuist.io/cloud/hashing#debugging
-4. https://docs.tuist.io/cloud/binary-caching#cache-warming
-5. https://github.com/tuist/tuist/pull/1765
-7. Selective test: https://github.com/tuist/tuist/pull/2422
-8. Generate test scheme: https://github.com/tuist/tuist/pull/2057
-9. https://github.com/Ryu0118/swift-dependencies-graph (using swift package dump-package to get all the dependencies)
-10. [PackageDescription](https://developer.apple.com/documentation/packagedescription)
+<img src=Resources/flow.png/>
+
+1. Find all SPM modules in the project
+2. Generate hashes for all SPM modules
+3. For each module, compare its current hash with its cache hash.
+4. If any module's hash is different from its cache hash, add that module to the test plan. Otherwise, disable that module in test plan.
+5. Run test with the test plan
+6. If test successfully, update cache.
+
+## Publication
+
+- In progress

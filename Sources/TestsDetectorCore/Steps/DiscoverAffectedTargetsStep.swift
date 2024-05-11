@@ -26,9 +26,9 @@ struct DiscoverAffectedTargetsStep: TestDetectorStep {
         )
         
         if cache.isEmpty {
-            log(message: "Not found any cache. Run all the test targets!")
+            log(message: "Not found any cache. Run all the test targets!", color: .yellow)
         } else {
-            log(message: "Affected test targets: \(affectedTestTargets.map(\.name))")
+            log(message: "Affected test targets: \(affectedTestTargets.map(\.name))", color: .yellow)
         }
         
         return .affectedTestTargetsDiscovered(affectedTestTargets)
