@@ -1,11 +1,11 @@
 
 import ArgumentParser
 import Foundation
-import TestsDetectorCore
+import SPMSelectiveTestingCore
 
-struct TestSelectiveCommand: AsyncParsableCommand {
+struct SPMSelectiveTestingCommand: AsyncParsableCommand {
     static var configuration = CommandConfiguration(
-        commandName: "testselective",
+        commandName: "spm-selective-testing",
         abstract: "🧪 Detect only test that needs to be executed.",
         version: "0.0.1",
         subcommands: [
@@ -16,9 +16,9 @@ struct TestSelectiveCommand: AsyncParsableCommand {
     )
 }
 
-public enum TestsDetector {
+public enum SelectiveTesting {
     public static func start() async {
-        await TestSelectiveCommand.main()
+        await SPMSelectiveTestingCommand.main()
     }
 }
 

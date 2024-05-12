@@ -7,16 +7,16 @@
 
 import Foundation
 
-struct UpdateTestPlanStep: TestDetectorStep {
+struct UpdateTestPlanStep: SelectiveTestingStep {
     
     let generator: TestPlanGeneratorProtocol.Type
     init(generator: TestPlanGeneratorProtocol.Type = TestPlanGenerator.self) {
         self.generator = generator
     }
     
-    func run(with state: TestDetectorState) throws -> TestDetectorState.Change {
+    func run(with state: SelectiveTestingState) throws -> SelectiveTestingState.Change {
         guard let originTestPlan = state.originTestPlan else {
-            throw TestDetectorError.dataProcessingError(message: "Should parse test plan first")
+            throw SelectiveTestingError.dataProcessingError(message: "Should parse test plan first")
         }
         
         let updatedTestPlan = generator.updateTestPlanTargets(

@@ -1,7 +1,7 @@
 import Foundation
 
 Task {
-    await TestsDetector.start()
+    await SelectiveTesting.start()
     exit(0)
 }
 

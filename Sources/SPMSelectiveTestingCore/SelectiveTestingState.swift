@@ -26,9 +26,9 @@ public struct RunOptions {
     }
 }
 
-final class TestDetectorState {
+final class SelectiveTestingState {
     var options: RunOptions
-    var configuration: TestSelectiveConfiguration?
+    var configuration: SelectiveTestingConfiguration?
     var allModules: [IModule] = []
     var originTestPlan: TestPlanModel?
     var updatedTestPlan: TestPlanModel?
@@ -41,9 +41,9 @@ final class TestDetectorState {
     }
 }
 
-extension TestDetectorState {
+extension SelectiveTestingState {
     enum Change {
-        case configurationLoaded(TestSelectiveConfiguration)
+        case configurationLoaded(SelectiveTestingConfiguration)
         case modulesResolved([IModule])
         case testPlanParsed(TestPlanModel)
         case cacheFetched(Cache)
@@ -54,7 +54,7 @@ extension TestDetectorState {
     }
 }
 
-extension TestDetectorState {
+extension SelectiveTestingState {
     func apply(_ change: Change) {
         switch change {
         case .configurationLoaded(let configuration):

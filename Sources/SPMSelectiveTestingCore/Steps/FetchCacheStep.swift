@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct UpdateCache: TestDetectorStep {
-    
+struct FetchCacheStep: SelectiveTestingStep {
+        
     let gitUtil: GitUtilProtocol.Type
     let cacheServiceFactory: CacheServiceFactoryProtocol.Type
     
@@ -20,17 +20,10 @@ struct UpdateCache: TestDetectorStep {
         self.cacheServiceFactory = cacheServiceFactory
     }
     
-    func run(with state: TestDetectorState) throws -> TestDetectorState.Change {
+    func run(with state: SelectiveTestingState) throws -> SelectiveTestingState.Change {
         guard let configuration = state.configuration else {
-            throw TestDetectorError.dataProcessingError(message: "Should load configuration first")
+            throw SelectiveTestingError.dataProcessingError(message: "Should load configuration first")
         }
-        
-        guard let testPlan = state.originTestPlan else {
-            throw TestDetectorError.dataProcessingError(message: "Should parse test plan first")
-        }
-        
-        let enabledTargets = testPlan.enabledModules.map(\.target.name)
-        let enabledTargetHashes = state.modulesHashes.filter { enabledTargets.contains($0.key) }
         
         let branch = try gitUtil.getCurrentBranch(at: state.options.rootPath)
         
@@ -39,8 +32,7 @@ struct UpdateCache: TestDetectorStep {
             branch: branch
         )
         
-        try cacheService.update(with: enabledTargetHashes)
-        log(message: "Cache has been updated. Cache file url: \(cacheService.cacheFileURL.absoluteString)", color: .green)
-        return .none
+        let cache = try cacheService.fetch()
+        return .cacheFetched(cache)
     }
 }

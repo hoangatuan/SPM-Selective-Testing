@@ -5,15 +5,15 @@
 import Foundation
 
 
-struct DiscoverAffectedTargetsStep: TestDetectorStep {
+struct DiscoverAffectedTargetsStep: SelectiveTestingStep {
     
-    func run(with state: TestDetectorState) throws -> TestDetectorState.Change {
+    func run(with state: SelectiveTestingState) throws -> SelectiveTestingState.Change {
         guard let testPlan = state.originTestPlan else {
-            throw TestDetectorError.dataProcessingError(message: "Should parse test plan first")
+            throw SelectiveTestingError.dataProcessingError(message: "Should parse test plan first")
         }
         
         guard let cache = state.currentCached else {
-            throw TestDetectorError.dataProcessingError(message: "Should fetch cache first")
+            throw SelectiveTestingError.dataProcessingError(message: "Should fetch cache first")
         }
         
         let enabledModules = testPlan.enabledModules.map(\.target.name)

@@ -4,12 +4,12 @@
 import PackageDescription
 
 let package = Package(
-    name: "TestDetector",
+    name: "SPMSelectiveTesting",
     platforms: [
         .macOS(.v13)
     ],
     products: [
-        .executable(name: "testsdetector", targets: ["TestsDetector"])
+        .executable(name: "spm-selective-testing", targets: ["SPMSelectiveTesting"])
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.2.0"),
@@ -20,27 +20,20 @@ let package = Package(
     ],
     targets: [
         .executableTarget(
-            name: "TestsDetector",
+            name: "SPMSelectiveTesting",
             dependencies: [
-                "TestsDetectorCore",
+                "SPMSelectiveTestingCore",
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
             ]
         ),
         .target(
-            name: "TestsDetectorCore",
+            name: "SPMSelectiveTestingCore",
             dependencies: [
                 "ShellOut",
                 "Files",
                 "Yams",
                 .product(name: "SwiftToolsSupport-auto", package: "swift-tools-support-core")
             ]
-        ),
-        .testTarget(
-            name: "TestsDetectorTest",
-            dependencies: [
-                "TestDetector"
-            ],
-            path: "Tests"
         )
     ]
 )

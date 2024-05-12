@@ -7,15 +7,15 @@
 
 import Foundation
 
-struct CleanUpStep: TestDetectorStep {
+struct CleanUpStep: SelectiveTestingStep {
     let generator: TestPlanGeneratorProtocol.Type
     init(generator: TestPlanGeneratorProtocol.Type = TestPlanGenerator.self) {
         self.generator = generator
     }
     
-    func run(with state: TestDetectorState) throws -> TestDetectorState.Change {
+    func run(with state: SelectiveTestingState) throws -> SelectiveTestingState.Change {
         guard let testPlan = state.originTestPlan else {
-            throw TestDetectorError.dataProcessingError(message: "Should parse test plan first")
+            throw SelectiveTestingError.dataProcessingError(message: "Should parse test plan first")
         }
         
         try generator.writeTestPlan(testPlan, filePath: state.options.testPlanPath)

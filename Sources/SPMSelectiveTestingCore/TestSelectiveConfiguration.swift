@@ -14,7 +14,7 @@ public struct CacheConfiguration: Codable {
     }
 }
 
-public struct TestSelectiveConfiguration: Codable {
+public struct SelectiveTestingConfiguration: Codable {
     let testCommandArguments: [String]
     let cacheConfiguration: CacheConfiguration
 
@@ -24,15 +24,15 @@ public struct TestSelectiveConfiguration: Codable {
     }
 }
 
-public extension TestSelectiveConfiguration {
+public extension SelectiveTestingConfiguration {
     func asYamlData() -> Data {
         let encoder = YAMLEncoder()
         return (try! encoder.encode(self)).data(using: .utf8)!
     }
 }
 
-public extension TestSelectiveConfiguration {
-    static func generateDefaultCongiruration() -> TestSelectiveConfiguration {
+public extension SelectiveTestingConfiguration {
+    static func generateDefaultCongiruration() -> SelectiveTestingConfiguration {
         let directory = FileManager.default.currentDirectoryPath
         let directoryContents = (FileManager.default.subpaths(atPath: directory) ?? []).map(URL.init(fileURLWithPath:))
         
@@ -46,7 +46,7 @@ public extension TestSelectiveConfiguration {
             .first!
     }
     
-    static func generateXcodeProjectConfiguration(from directoryContents: [URL]) -> TestSelectiveConfiguration? {
+    static func generateXcodeProjectConfiguration(from directoryContents: [URL]) -> SelectiveTestingConfiguration? {
         guard !directoryContainsXcodeWorkspace(directoryContents),
               let index = directoryContents.firstIndex(where: { $0.lastPathComponent.contains(".xcodeproj") }),
               let arguments = arguments(forProjectFileAt: directoryContents[index], isWorkSpace: false)
@@ -54,7 +54,7 @@ public extension TestSelectiveConfiguration {
             return nil
         }
 
-        return TestSelectiveConfiguration(
+        return SelectiveTestingConfiguration(
             testCommandArguments: arguments,
             cacheConfiguration: .init(
                 local: "./test-selective-cache",
@@ -63,7 +63,7 @@ public extension TestSelectiveConfiguration {
         )
     }
 
-    static func generateXcodeWorkspaceConfiguration(from directoryContents: [URL]) -> TestSelectiveConfiguration? {
+    static func generateXcodeWorkspaceConfiguration(from directoryContents: [URL]) -> SelectiveTestingConfiguration? {
         guard directoryContainsXcodeWorkspace(directoryContents),
               let index = directoryContents.firstIndex(where: { $0.lastPathComponent.contains(".xcodeproj") }),
               let arguments = arguments(forProjectFileAt: directoryContents[index], isWorkSpace: true)
@@ -71,7 +71,7 @@ public extension TestSelectiveConfiguration {
             return nil
         }
 
-        return TestSelectiveConfiguration(
+        return SelectiveTestingConfiguration(
             testCommandArguments: arguments,
             cacheConfiguration: .init(
                 local: "./test-selective-cache",

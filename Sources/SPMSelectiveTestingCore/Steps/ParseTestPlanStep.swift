@@ -7,19 +7,19 @@
 
 import Foundation
 
-struct ParseTestPlanStep: TestDetectorStep {
+struct ParseTestPlanStep: SelectiveTestingStep {
     
     let generator: TestPlanGeneratorProtocol.Type
     init(generator: TestPlanGeneratorProtocol.Type = TestPlanGenerator.self) {
         self.generator = generator
     }
     
-    func run(with state: TestDetectorState) throws -> TestDetectorState.Change {
+    func run(with state: SelectiveTestingState) throws -> SelectiveTestingState.Change {
         do {
             let testPlan = try generator.readTestPlan(filePath: state.options.testPlanPath)
             return .testPlanParsed(testPlan)
         } catch {
-            throw TestDetectorError.testPlanInvalid
+            throw SelectiveTestingError.testPlanInvalid
         }
     }
 }

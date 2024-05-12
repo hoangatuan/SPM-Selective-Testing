@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum TestDetectorError: Error {
+enum SelectiveTestingError: Error {
     case configurationNotFound
     case configurationInvalid
     case testPlanInvalid

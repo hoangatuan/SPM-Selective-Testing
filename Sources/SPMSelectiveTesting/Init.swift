@@ -4,7 +4,7 @@
 
 import ArgumentParser
 import Foundation
-import TestsDetectorCore
+import SPMSelectiveTestingCore
 
 struct Init: ParsableCommand {
     
@@ -14,7 +14,7 @@ struct Init: ParsableCommand {
     )
     
     func run() throws {
-        let defaultConfiguration = TestSelectiveConfiguration.generateDefaultCongiruration()
+        let defaultConfiguration = SelectiveTestingConfiguration.generateDefaultCongiruration()
          
         let directory = FileManager.default.currentDirectoryPath
         let configurationPath = "\(directory)/\(Constants.fileNameWithExtension)"

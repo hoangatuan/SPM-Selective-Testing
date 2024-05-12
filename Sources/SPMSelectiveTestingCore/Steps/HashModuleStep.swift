@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct HashModulesStep: TestDetectorStep {
-    func run(with state: TestDetectorState) throws -> TestDetectorState.Change {
+struct HashModulesStep: SelectiveTestingStep {
+    func run(with state: SelectiveTestingState) throws -> SelectiveTestingState.Change {
         let hasher = ModuleHasher(modules: state.allModules)
         let hashes = try hasher.generateHash()
         return .hashesCalculated(hashes)

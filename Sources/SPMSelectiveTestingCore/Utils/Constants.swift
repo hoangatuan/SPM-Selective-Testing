@@ -8,7 +8,7 @@
 import Foundation
 
 public enum Constants {
-    static let fileName = ".test-selective.conf"
+    static let fileName = ".selective-testing.conf"
     static let `extension` = "yml"
     public static let fileNameWithExtension = "\(fileName).\(`extension`)"
     

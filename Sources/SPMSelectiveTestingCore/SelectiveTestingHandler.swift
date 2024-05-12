@@ -4,10 +4,10 @@
 
 import Foundation
 
-public final class TestsDetectorHandler {
+public final class SelectiveTestingHandler {
     
-    private let steps: [TestDetectorStep]
-    private var state: TestDetectorState
+    private let steps: [SelectiveTestingStep]
+    private var state: SelectiveTestingState
     
     public init(options: RunOptions) {
         self.state = .init(options: options)
@@ -26,9 +26,9 @@ public final class TestsDetectorHandler {
     }
     
     public func run() throws {
+        FileManager.default.changeCurrentDirectoryPath(state.options.rootPath)
         for step in steps {
-            log(message: "Start running step: \(step.description)... ")
-            let changes = try step.run(with: state)
+            let changes = try step.runWithTimeMeasurement(with: state)
             state.apply(changes)
         }
     }

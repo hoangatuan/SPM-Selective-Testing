@@ -8,16 +8,16 @@
 import Foundation
 import ShellOut
 
-struct RunTest: TestDetectorStep {
+struct RunTest: SelectiveTestingStep {
     
     let generator: TestPlanGeneratorProtocol.Type
     init(generator: TestPlanGeneratorProtocol.Type = TestPlanGenerator.self) {
         self.generator = generator
     }
     
-    func run(with state: TestDetectorState) throws -> TestDetectorState.Change {
+    func run(with state: SelectiveTestingState) throws -> SelectiveTestingState.Change {
         guard let testPlan = state.updatedTestPlan else {
-            throw TestDetectorError.dataProcessingError(message: "Should parse test plan first")
+            throw SelectiveTestingError.dataProcessingError(message: "Should parse test plan first")
         }
         
         if testPlan.enabledModules.isEmpty {
@@ -39,7 +39,7 @@ struct RunTest: TestDetectorStep {
         return .none
     }
     
-    private func logTestTargets(state: TestDetectorState, updatedTestPlan: TestPlanModel) {
+    private func logTestTargets(state: SelectiveTestingState, updatedTestPlan: TestPlanModel) {
         for testTarget in unaffectedTestTarget(state: state) {
             log(message: "Skip running test target: \(testTarget). ⏭️", color: .yellow)
         }
@@ -49,7 +49,7 @@ struct RunTest: TestDetectorStep {
         
     }
     
-    private func unaffectedTestTarget(state: TestDetectorState) -> [String] {
+    private func unaffectedTestTarget(state: SelectiveTestingState) -> [String] {
         guard let originTestPlan = state.originTestPlan, let updatedTestPlan = state.updatedTestPlan else { return [] }
         let originTestTargets = originTestPlan.enabledModules.map(\.target.name)
         let updatedTestTargets = updatedTestPlan.enabledModules.map(\.target.name)

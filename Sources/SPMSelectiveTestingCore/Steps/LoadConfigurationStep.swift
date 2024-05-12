@@ -8,7 +8,7 @@
 import Foundation
 import Yams
 
-struct LoadConfigurationStep: TestDetectorStep {
+struct LoadConfigurationStep: SelectiveTestingStep {
     
     let fileManager: FileManager
     
@@ -16,17 +16,17 @@ struct LoadConfigurationStep: TestDetectorStep {
         self.fileManager = fileManager
     }
     
-    func run(with state: TestDetectorState) throws -> TestDetectorState.Change {
+    func run(with state: SelectiveTestingState) throws -> SelectiveTestingState.Change {
         log(message: "Try to load configuration at \(state.options.configurationPath)...")
         guard let data = fileManager.contents(atPath: state.options.configurationPath) else {
-            throw TestDetectorError.configurationNotFound
+            throw SelectiveTestingError.configurationNotFound
         }
         
         do {
-            let configuration = try YAMLDecoder().decode(TestSelectiveConfiguration.self, from: data)
+            let configuration = try YAMLDecoder().decode(SelectiveTestingConfiguration.self, from: data)
             return .configurationLoaded(configuration)
         } catch {
-            throw TestDetectorError.configurationInvalid
+            throw SelectiveTestingError.configurationInvalid
         }
     }
 }

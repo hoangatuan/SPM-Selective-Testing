@@ -7,13 +7,13 @@
 
 import Foundation
 
-struct ModulesResolverStep: TestDetectorStep {
+struct ModulesResolverStep: SelectiveTestingStep {
     let resolver: ModulesResolverProtocol.Type
     init(resolver: ModulesResolverProtocol.Type = ModulesResolver.self) {
         self.resolver = resolver
     }
     
-    func run(with state: TestDetectorState) throws -> TestDetectorState.Change {
+    func run(with state: SelectiveTestingState) throws -> SelectiveTestingState.Change {
         let allModules = try resolver.resolveAllModules(
             at: state.options.rootPath,
             projectPath: state.options.projectPath

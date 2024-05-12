@@ -5,7 +5,7 @@
 
 import ArgumentParser
 import Foundation
-import TestsDetectorCore
+import SPMSelectiveTestingCore
 
 struct Run: ParsableCommand {
     static let configuration = CommandConfiguration(
@@ -14,10 +14,10 @@ struct Run: ParsableCommand {
     )
     
 #if DEBUG
-    private var rootPath: String = "/Users/tuanhoang/Documents/TestsDetector/iMovie"
-    private var projectPath: String = "/Users/tuanhoang/Documents/TestsDetector/iMovie/iMovie.xcodeproj"
-    private var testPlanPath: String = "/Users/tuanhoang/Documents/TestsDetector/iMovie/iMovie.xctestplan"
-    private var configurationPath = "/Users/tuanhoang/Documents/TestsDetector/Resources/selective-testing.yml"
+    private var rootPath: String = "/Users/tuanhoang/Documents/SPMSelectiveTesting/iMovie"
+    private var projectPath: String = "/Users/tuanhoang/Documents/SPMSelectiveTesting/iMovie/iMovie.xcodeproj"
+    private var testPlanPath: String = "/Users/tuanhoang/Documents/SPMSelectiveTesting/iMovie/iMovie.xctestplan"
+    private var configurationPath = "/Users/tuanhoang/Documents/SPMSelectiveTesting/Resources/.selective-testing.conf.yml"
 
 #else
     @Option(name: .shortAndLong, help: "The root path of the project. If not provided, the program will use the current directory.")
@@ -39,7 +39,7 @@ struct Run: ParsableCommand {
     
 #endif
     func run() throws {
-        let handler = TestsDetectorHandler(
+        let handler = SelectiveTestingHandler(
             options: .init(
                 rootPath: rootPath,
                 projectPath: projectPath,
