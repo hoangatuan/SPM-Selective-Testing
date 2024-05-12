@@ -28,7 +28,7 @@ With `spm-selective-testing`, we can **run only the tests that have changed sinc
 As mentioned above, selective testing can **run only the tests that have changed**.  
 So what is tests that have changed?
 
-| A test target is marked as changed if its dependencies or its source code has changed.
+> **A test target is marked as changed if its dependencies or it's source code has changed.**
 
 For example, assuming the following dependency graph:
 
@@ -38,14 +38,14 @@ Core has tests CoreTests
 
 | Action    | Description |
 | -------- | ------- |
-| FeatureA soure code changed | Only FeatureATests is marked as changed |
-| FeatureB soure code changed | Only FeatureBTests is marked as changed |
-| Core source code changed | FeatureATests, FeatureBTests and CoreTests are marked as changed |
+| FeatureA source code changed | Only FeatureATests is marked as changed |
+| FeatureB source code changed | Only FeatureBTests is marked as changed |
+| Core source code changed | FeatureATests, FeatureBTests, and CoreTests are marked as changed |
 
 
 ## Installation
 
-You can go to [GitHub Releases](https://github.com/hoangatuan/SPM-Selective-Testing/releases) page to download release executable program
+You can go to [GitHub Releases](https://github.com/hoangatuan/SPM-Selective-Testing/releases) page to download the release executable program
 (This project is still in the development phase, and not ready for production.)
 
 ## Usage
