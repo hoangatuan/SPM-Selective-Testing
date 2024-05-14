@@ -13,8 +13,8 @@ struct ModulesResolverStep: SelectiveTestingStep {
         self.resolver = resolver
     }
     
-    func run(with state: SelectiveTestingState) throws -> SelectiveTestingState.Change {
-        let allModules = try resolver.resolveAllModules(
+    func run(with state: SelectiveTestingState) async throws -> SelectiveTestingState.Change {
+        let allModules = try await resolver.resolveAllModules(
             at: state.options.rootPath,
             projectPath: state.options.projectPath
         )

@@ -8,13 +8,8 @@
 import Foundation
 import Files
 
-/*
- TODO:
- 1. Utilize threading to hash files concurrently
- */
-
 protocol SourceFileContentHashing {
-    func hash(sources: [String]) throws -> MD5Hash
+    func hash(sources: [String]) async throws -> MD5Hash
 }
 
 struct SourceFileContentHasher: SourceFileContentHashing {
@@ -22,28 +17,30 @@ struct SourceFileContentHasher: SourceFileContentHashing {
     init(contentHasher: ContentHashing = ContentHasher()) {
         self.contentHasher = contentHasher
     }
-    
-    func hash(sources: [String]) throws -> MD5Hash {
-        var md5Hashes: [MD5Hash] = []
-        
-        try sources.forEach {
-            if let folder = try? Folder(path: $0) {
-                try folder.files.recursive.forEach { file in
-                    let md5Hash = try hash(file: file)
-                    md5Hashes.append(md5Hash)
+
+    func hash(sources: [String]) async throws -> MD5Hash {
+        let files = try sources.map { try $0.asFiles() }.flatMap { $0 }
+
+        let md5Hashes: [MD5Hash] = try await withThrowingTaskGroup(of: MD5Hash.self) { group in
+            var md5Hashes: [MD5Hash] = []
+
+            files.forEach { file in
+                group.addTask {
+                    return try await hash(file: file)
                 }
-            } else {
-                let file = try File(path: $0)
-                let md5Hash = try hash(file: file)
-                md5Hashes.append(md5Hash)
             }
+
+            for try await result in group {
+                md5Hashes.append(result)
+            }
+            return md5Hashes
         }
-        
-        let md5Hash = try contentHasher.hash(md5Hashes)
-        return md5Hash
+
+        let sourceFilesHash = try contentHasher.hash(md5Hashes)
+        return sourceFilesHash
     }
-    
-    private func hash(file: File) throws -> MD5Hash {
+
+    private func hash(file: File) async throws -> MD5Hash {
         let contentData = try file.read()
         let md5Hash = try contentHasher.hash(contentData)
         return md5Hash

@@ -9,16 +9,18 @@ import Foundation
 import Files
 
 protocol ModulesResolverProtocol {
-    static func resolveAllModules(at rootPath: String, projectPath: String) throws -> [IModule]
+    static func resolveAllModules(at rootPath: String, projectPath: String) async throws -> [IModule]
 }
 
 enum ModulesResolver: ModulesResolverProtocol {
-    static func resolveAllModules(at rootPath: String, projectPath: String) throws -> [IModule] {
-        let allModules: [IModule] = try findAllRemoteModules(at: projectPath) + findAllLocalModules(at: rootPath)
+    static func resolveAllModules(at rootPath: String, projectPath: String) async throws -> [IModule] {
+        async let remoteModules = findAllRemoteModules(at: projectPath)
+        async let localModules = findAllLocalModules(at: rootPath)
+        let allModules: [IModule] = try await (remoteModules + localModules)
         return allModules
     }
     
-    private static func findAllRemoteModules(at projectPath: String) throws -> [RemoteModule] {
+    private static func findAllRemoteModules(at projectPath: String) async throws -> [RemoteModule] {
         let projectFileURL = URL(fileURLWithPath: projectPath)
         let projectType = try ProjectType(fileURL: projectFileURL)
         let project = try projectType.project(fileURL: projectFileURL)
@@ -27,14 +29,25 @@ enum ModulesResolver: ModulesResolverProtocol {
         return remoteModules
     }
     
-    private static func findAllLocalModules(at rootPath: String) throws -> [LocalModule] {
+    private static func findAllLocalModules(at rootPath: String) async throws -> [LocalModule] {
         let packageFiles = try findAllPackageFiles(at: rootPath)
-        let localModules = try packageFiles.compactMap { file -> [LocalModule]? in
-            guard let url = file.parent?.path else { return nil }
-            let reader = DependenciesReader(packageRootDirectoryPath: url)
-            let modules = try reader.readDependencies()
+        let localModules = try await withThrowingTaskGroup(of: [LocalModule].self) { group in
+            var modules: [LocalModule] = []
+            for file in packageFiles {
+                group.addTask {
+                    guard let url = file.parent?.path else { return [] }
+                    let reader = DependenciesReader(packageRootDirectoryPath: url)
+                    let modules = try reader.readDependencies()
+                    return modules
+                }
+            }
+
+            for try await module in group {
+                modules.append(contentsOf: module)
+            }
+
             return modules
-        }.flatMap { $0 }
+        }
         return localModules
     }
     

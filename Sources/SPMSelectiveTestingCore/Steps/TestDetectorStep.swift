@@ -1,14 +1,11 @@
 //
-//  File.swift
-//  
-//
 //  Created by Tuan Hoang Anh on 11/5/24.
 //
 
 import Foundation
 
 protocol SelectiveTestingStep {
-    func run(with state: SelectiveTestingState) throws -> SelectiveTestingState.Change
+    func run(with state: SelectiveTestingState) async throws -> SelectiveTestingState.Change
 }
 
 extension SelectiveTestingStep {
@@ -16,10 +13,10 @@ extension SelectiveTestingStep {
         return String(describing: Self.self)
     }
     
-    func runWithTimeMeasurement(with state: SelectiveTestingState) throws -> SelectiveTestingState.Change {
+    func runWithTimeMeasurement(with state: SelectiveTestingState) async throws -> SelectiveTestingState.Change {
         log(message: "Start running step: \(description)... ")
         let startDate = Date()
-        let change = try run(with: state)
+        let change = try await run(with: state)
         let endDate = Date()
         let duration = DateInterval(
             start: startDate,

@@ -1,7 +1,4 @@
 //
-//  File.swift
-//  
-//
 //  Created by Tuan Hoang Anh on 4/5/24.
 //
 
@@ -12,7 +9,7 @@ enum ModuleHasherError: Error {
 }
 
 protocol ModuleHashing {
-    func generateHash() throws -> [ModuleName: MD5Hash]
+    func generateHash() async throws -> [ModuleName: MD5Hash]
 }
 
 final class ModuleHasher: ModuleHashing {
@@ -38,31 +35,29 @@ final class ModuleHasher: ModuleHashing {
         self.versionHasher = versionHasher
     }
     
-    func generateHash() throws -> [ModuleName: MD5Hash] {
-        try modules.forEach {
-            try hash(module: $0)
+    func generateHash() async throws -> [ModuleName: MD5Hash] {
+        await withThrowingTaskGroup(of: Void.self) { group in
+            modules.forEach { module in
+                group.addTask {
+                    try await self.hash(module: module)
+                }
+            }
         }
-        
+
         return dic
     }
     
+    /* To hash
+     - swift version, deployment version?
+     */
     @discardableResult
-    private func hash(module: IModule) throws -> MD5Hash {
-        /* To hash
-         5. // swift version, deployment version?
-         */
-        
+    private func hash(module: IModule) async throws -> MD5Hash {
         if let hash = dic[module.name] { return hash }
         
-        let sourcesHash = try sourceFileContentHasher.hash(sources: module.sourceCodes)
+        let sourcesHash = try await sourceFileContentHasher.hash(sources: module.sourceCodes)
         let version = versionHasher.hash(module: module)
-        let dependenciesHash = try module.dependencies.map {
-            guard let module = modulesDic[$0] else {
-                throw ModuleHasherError.moduleNotFound
-            }
-            return try hash(module: module)
-        }
-        
+        let dependenciesHash: [MD5Hash] = try await hashDependencies(of: module)
+
         var stringsToHash: [String] = [
             sourcesHash,
             module.name,
@@ -74,6 +69,28 @@ final class ModuleHasher: ModuleHashing {
         let md5Hash: String = try contentHasher.hash(stringsToHash)
         dic[module.name] = md5Hash
         return md5Hash
+    }
+
+    private func hashDependencies(of module: IModule) async throws -> [MD5Hash] {
+        let dependenciesHash: [MD5Hash] = try await withThrowingTaskGroup(of: MD5Hash.self) { group in
+            var dependenciesHash: [MD5Hash] = []
+            try module.dependencies.forEach { module in
+                guard let module = modulesDic[module] else {
+                    throw ModuleHasherError.moduleNotFound
+                }
+
+                group.addTask {
+                    return try await self.hash(module: module)
+                }
+            }
+
+            for try await hash in group {
+                dependenciesHash.append(hash)
+            }
+
+            return dependenciesHash
+        }
+        return dependenciesHash
     }
 }
 
