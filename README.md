@@ -11,6 +11,7 @@ This is a tool to help you run only the tests that have changed since the last s
 
 - [Why](#why)
 - [Selective Testing?](#selective-testing)
+- [Prerequisite](#prerequisite)
 - [Installation](#installation)
 - [Usage](#usage)
 - [How it works](#how-it-works)
@@ -21,12 +22,12 @@ This is a tool to help you run only the tests that have changed since the last s
 As the project grows, more and more tests are added. It makes **the time to run all the tests increase dramatically**.   
 As your team grows, more and more times your team and your CI need to run the tests.   
 Especially on CI, we normally clean and re-run all the tests, **regardless of the changes**.   
-With `spm-selective-testing`, we can **run only the tests that have changed since the last successful test run**, reducing the time to run the tests significantly. 🚀
+With `spm-selective-testing`, we can **run only the tests that have changed since the last successful test run**, significantly reducing the time to run the tests. 🚀
 
 ## Selective Testing?
 
 As mentioned above, selective testing can **run only the tests that have changed**.  
-So what is tests that have changed?
+So what are tests that have changed?
 
 > **A test target is marked as changed if its dependencies or it's source code has changed.**
 
@@ -42,6 +43,10 @@ Core has tests CoreTests
 | FeatureB source code changed | Only FeatureBTests is marked as changed |
 | Core source code changed | FeatureATests, FeatureBTests, and CoreTests are marked as changed |
 
+## Prerequisite
+
+- Your project is using SPM & Modular architecture
+- Your project is using [Test plan](https://developer.apple.com/documentation/xcode/organizing-tests-to-improve-feedback) to organize tests
 
 ## Installation
 
