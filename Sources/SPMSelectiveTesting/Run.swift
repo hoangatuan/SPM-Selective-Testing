@@ -14,10 +14,10 @@ struct Run: AsyncParsableCommand {
     )
     
 #if DEBUG
-    private var rootPath: String = "/Users/tuanhoang/Documents/SPMSelectiveTesting/iMovie"
-    private var projectPath: String = "/Users/tuanhoang/Documents/SPMSelectiveTesting/iMovie/iMovie.xcodeproj"
-    private var testPlanPath: String = "/Users/tuanhoang/Documents/SPMSelectiveTesting/iMovie/iMovie.xctestplan"
-    private var configurationPath = "/Users/tuanhoang/Documents/SPMSelectiveTesting/iMovie/.selective-testing.conf.yml"
+    private var rootPath: String = "/Users/tuanhoang/Documents/SPM-Selective-Testing/iMovie"
+    private var projectPath: String = "/Users/tuanhoang/Documents/SPM-Selective-Testing/iMovie/iMovie.xcodeproj"
+    private var testPlanPath: String = "/Users/tuanhoang/Documents/SPM-Selective-Testing/iMovie/iMovie.xctestplan"
+    private var configurationPath = "/Users/tuanhoang/Documents/SPM-Selective-Testing/iMovie/.selective-testing.conf.yml"
 
 #else
     @Option(name: .shortAndLong, help: "The root path of the project. If not provided, the program will use the current directory.")
