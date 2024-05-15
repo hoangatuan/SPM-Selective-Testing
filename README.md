@@ -76,4 +76,4 @@ You can go to [GitHub Releases](https://github.com/hoangatuan/SPM-Selective-Test
 
 ## Publication
 
-- In progress
+- [Medium](https://medium.com/p/384879e5f243)
