@@ -4,9 +4,10 @@ import ShellOut
 
 // https://developer.apple.com/documentation/packagedescription
 
-public struct DependenciesReader {
+final class DependenciesReader {
     private let packageRootDirectoryPath: String
     private let decoder: JSONDecoder
+    private var retry = 0
     
     public init(
         packageRootDirectoryPath: String,
@@ -18,6 +19,16 @@ public struct DependenciesReader {
     
     public func readDependencies() throws -> [LocalModule] {
         let jsonString = try dumpPackage()
+        
+        /// When using async-await, executing shell commands can sometimes return an empty string.
+        /// Using GCD with Dispatch Group can solve this issue.
+        /// However, modern concurrency has better performance than GCD. So I used modern concurrency here with retry mechanism to solve the issue.
+        if jsonString.isEmpty && retry < 3 {
+            debugPrint("retryyy")
+            self.retry += 1
+            return try readDependencies()
+        }
+        
         let jsonData = jsonString.data(using: .utf8)!
         return try decoder
             .decode(DumpPackageResponse.self, from: jsonData)

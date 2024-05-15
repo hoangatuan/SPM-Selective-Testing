@@ -1,8 +1,5 @@
 //
-//  File.swift
-//  
-//
-//  Created by Tuan Hoang Anh on 11/5/24.
+// Created by Tuan Hoang Anh on 11/5/24.
 //
 
 import Foundation
