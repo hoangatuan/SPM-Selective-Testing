@@ -15,6 +15,7 @@ This is a tool to help you run only the tests that have changed since the last s
 - [Installation](#installation)
 - [Usage](#usage)
 - [How it works](#how-it-works)
+- [Contribute](#contribute)
 - [Publication](#publication)
 
 ## Why
@@ -73,6 +74,10 @@ You can go to [GitHub Releases](https://github.com/hoangatuan/SPM-Selective-Test
 4. If any module's hash is different from its cache hash, add that module to the test plan. Otherwise, disable that module in the test plan.
 5. Run tests with the test plan.
 6. If run tests successfully, update the cache.
+
+## Contribute
+
+Feel free to open new issues/feature request/merge request 
 
 ## Publication
 
