@@ -24,7 +24,6 @@ final class DependenciesReader {
         /// Using GCD with Dispatch Group can solve this issue.
         /// However, modern concurrency has better performance than GCD. So I used modern concurrency here with retry mechanism to solve the issue.
         if jsonString.isEmpty && retry < 3 {
-            debugPrint("retryyy")
             self.retry += 1
             return try readDependencies()
         }

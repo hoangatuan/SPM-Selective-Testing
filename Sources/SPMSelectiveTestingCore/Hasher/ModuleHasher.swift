@@ -12,8 +12,8 @@ protocol ModuleHashing {
     func generateHash() async throws -> [ModuleName: MD5Hash]
 }
 
-final class ModuleHasher: ModuleHashing {
-    
+actor ModuleHasher: ModuleHashing {
+
     private let modules: [IModule]
     private var dic: [ModuleName: MD5Hash] = [:]
     private var modulesDic: [ModuleName: IModule] = [:]
