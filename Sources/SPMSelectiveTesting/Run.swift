@@ -7,17 +7,17 @@ import ArgumentParser
 import Foundation
 import SPMSelectiveTestingCore
 
-struct Run: ParsableCommand {
+struct Run: AsyncParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "run",
         abstract: "This program will check for the tests that are really need to be executed"
     )
     
 #if DEBUG
-    private var rootPath: String = "/Users/tuanhoang/Documents/SPMSelectiveTesting/iMovie"
-    private var projectPath: String = "/Users/tuanhoang/Documents/SPMSelectiveTesting/iMovie/iMovie.xcodeproj"
-    private var testPlanPath: String = "/Users/tuanhoang/Documents/SPMSelectiveTesting/iMovie/iMovie.xctestplan"
-    private var configurationPath = "/Users/tuanhoang/Documents/SPMSelectiveTesting/Resources/.selective-testing.conf.yml"
+    private var rootPath: String = "/Users/tuanhoang/Documents/SPM-Selective-Testing/iMovie"
+    private var projectPath: String = "/Users/tuanhoang/Documents/SPM-Selective-Testing/iMovie/iMovie.xcodeproj"
+    private var testPlanPath: String = "/Users/tuanhoang/Documents/SPM-Selective-Testing/iMovie/iMovie.xctestplan"
+    private var configurationPath = "/Users/tuanhoang/Documents/SPM-Selective-Testing/iMovie/.selective-testing.conf.yml"
 
 #else
     @Option(name: .shortAndLong, help: "The root path of the project. If not provided, the program will use the current directory.")
@@ -38,7 +38,7 @@ struct Run: ParsableCommand {
     var testPlanPath: String
     
 #endif
-    func run() throws {
+    func run() async throws {
         let handler = SelectiveTestingHandler(
             options: .init(
                 rootPath: rootPath,
@@ -49,7 +49,7 @@ struct Run: ParsableCommand {
         )
         
         do {
-            try handler.run()
+            try await handler.run()
             log(message: "SUCCESSFULLY!!! 🚀🚀🚀", color: .green)
         } catch {
             log(message: "❌ Error occured: \(error.localizedDescription)", color: .red)

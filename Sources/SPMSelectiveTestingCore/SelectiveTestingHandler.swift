@@ -25,10 +25,10 @@ public final class SelectiveTestingHandler {
         ]
     }
     
-    public func run() throws {
+    public func run() async throws {
         FileManager.default.changeCurrentDirectoryPath(state.options.rootPath)
         for step in steps {
-            let changes = try step.runWithTimeMeasurement(with: state)
+            let changes = try await step.runWithTimeMeasurement(with: state)
             state.apply(changes)
         }
     }
