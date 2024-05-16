@@ -36,12 +36,8 @@ actor ModuleHasher: ModuleHashing {
     }
     
     func generateHash() async throws -> [ModuleName: MD5Hash] {
-        await withThrowingTaskGroup(of: Void.self) { group in
-            modules.forEach { module in
-                group.addTask {
-                    try await self.hash(module: module)
-                }
-            }
+        for module in modules {
+            try await self.hash(module: module)
         }
 
         return dic
@@ -56,7 +52,7 @@ actor ModuleHasher: ModuleHashing {
         
         let sourcesHash = try await sourceFileContentHasher.hash(sources: module.sourceCodes)
         let version = versionHasher.hash(module: module)
-        let dependenciesHash: [MD5Hash] = try await hashDependencies(of: module)
+        let dependenciesHash = try await hashDependencies(of: module)
 
         var stringsToHash: [String] = [
             sourcesHash,
@@ -72,25 +68,16 @@ actor ModuleHasher: ModuleHashing {
     }
 
     private func hashDependencies(of module: IModule) async throws -> [MD5Hash] {
-        let dependenciesHash: [MD5Hash] = try await withThrowingTaskGroup(of: MD5Hash.self) { group in
-            var dependenciesHash: [MD5Hash] = []
-            try module.dependencies.forEach { module in
-                guard let module = modulesDic[module] else {
-                    throw ModuleHasherError.moduleNotFound
-                }
-
-                group.addTask {
-                    return try await self.hash(module: module)
-                }
+        var hashes: [MD5Hash] = []
+        for moduleName in module.dependencies {
+            guard let module = modulesDic[moduleName] else {
+                throw ModuleHasherError.moduleNotFound
             }
 
-            for try await hash in group {
-                dependenciesHash.append(hash)
-            }
-
-            return dependenciesHash
+            hashes.append(try await hash(module: module))
         }
-        return dependenciesHash
+
+        return hashes
     }
 }
 
