@@ -21,18 +21,21 @@ actor ModuleHasher: ModuleHashing {
     let contentHasher: ContentHashing
     let versionHasher: VersionHashing
     let sourceFileContentHasher: SourceFileContentHashing
+    let platformHasher: PlatformHashing
     
     init(
         modules: [IModule],
         contentHasher: ContentHashing = ContentHasher(),
         sourceFileContentHasher: SourceFileContentHashing = SourceFileContentHasher(),
-        versionHasher: VersionHashing = VersionHasher()
+        versionHasher: VersionHashing = VersionHasher(),
+        platformHasher: PlatformHashing = PlatformHasher()
     ) {
         self.modules = modules
         self.modulesDic = modules.dictionary
         self.contentHasher = contentHasher
         self.sourceFileContentHasher = sourceFileContentHasher
         self.versionHasher = versionHasher
+        self.platformHasher = platformHasher
     }
     
     func generateHash() async throws -> [ModuleName: MD5Hash] {
@@ -53,11 +56,13 @@ actor ModuleHasher: ModuleHashing {
         let sourcesHash = try await sourceFileContentHasher.hash(sources: module.sourceCodes)
         let version = versionHasher.hash(module: module)
         let dependenciesHash = try await hashDependencies(of: module)
+        let platformHash = try platformHasher.hash(module: module)
 
         var stringsToHash: [String] = [
             sourcesHash,
             module.name,
             version,
+            platformHash
         ]
         
         stringsToHash += dependenciesHash

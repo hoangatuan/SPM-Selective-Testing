@@ -15,6 +15,15 @@ enum TargetType : String, Codable {
     case macro
 }
 
+struct Platform: Decodable {
+    let platformName: String
+    let version: String
+    
+    var id: String {
+        return "\(platformName)-\(version)"
+    }
+}
+
 public struct LocalModule: IModule {
     let name: String
     let type: TargetType
@@ -39,6 +48,7 @@ public struct LocalModule: IModule {
     /// The paths to source and resource files that you don't want to include in the target.
     /// Excluded paths are relative to the target path.
     let exclude: [String]
+    let platforms: [Platform]
     
     var isTest: Bool {
         type == .test

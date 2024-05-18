@@ -45,6 +45,7 @@ final class DependenciesReader {
 
 private struct DumpPackageResponse: Decodable {
     let rootPaths: [String]
+    let platforms: [Platform]
     let targets: [Target]
     
     struct Target: Decodable {
@@ -65,6 +66,7 @@ private struct DumpPackageResponse: Decodable {
     enum CodingKeys: String, CodingKey {
         case packageKind
         case targets
+        case platforms
     }
     
     enum PackageKindCodingKeys: String, CodingKey {
@@ -76,6 +78,7 @@ private struct DumpPackageResponse: Decodable {
         let rootPath = try container.nestedContainer(keyedBy: PackageKindCodingKeys.self, forKey: .packageKind)
         rootPaths = try rootPath.decode([String].self, forKey: .root)
         targets = try container.decode([Target].self, forKey: .targets)
+        platforms = try container.decode([Platform].self, forKey: .platforms)
     }
 }
 
@@ -92,7 +95,8 @@ extension DumpPackageResponse {
                 root: rootPaths[0],
                 path: target.path,
                 sources: target.sources,
-                exclude: target.exclude
+                exclude: target.exclude, 
+                platforms: platforms
             )
         }
     }
