@@ -20,8 +20,24 @@ public struct LocalModule: IModule {
     let type: TargetType
     let dependencies: [String]
     let root: String
+    
+    /// The path of the target, relative to the package root.
+    /// If the path is `nil`, Swift Package Manager looks for a target's source files at
+    /// predefined search paths and in a subdirectory with the target's name.
+    /// - `Sources`, `Source`, `src`, and `srcs` for regular targets
+    /// - `Tests`, `Sources`, `Source`, `src`, and `srcs` for test targets
+    /// For example, Swift Package Manager looks for source files inside the
+    /// `[PackageRoot]/Sources/[TargetName]` directory.
     let path: String?
+    
+    /// The source files in this target.
+    /// If this property is `nil`, Swift Package Manager includes all valid source files in the
+    /// target's path and treats specified paths as relative to the target's
+    /// path.
     let sources: [String]?
+    
+    /// The paths to source and resource files that you don't want to include in the target.
+    /// Excluded paths are relative to the target path.
     let exclude: [String]
     
     var isTest: Bool {
@@ -34,29 +50,27 @@ public struct LocalModule: IModule {
     
     var sourceCodes: [String] {
         var results: [String] = []
-        var excludeDic: Set<String> = Set()
-        results.forEach { excludeDic.insert($0) }
+
         
         if let sources = sources {
-            sources.forEach {
-                if let folder = try? Folder(path: $0) {
-                    folder.files.recursive.forEach {
-                        if !excludeDic.contains($0.path) {
-                            results.append($0.path)
-                        }
-                    }
-                } else if !excludeDic.contains($0) {
-                    results.append($0)
-                }
+            let files = sources.map { try! $0.asFiles() }.flatMap { $0 }
+            files.forEach {
+                results.append($0.path)
             }
             
-            return results
+            return results       
         }
         
         if let path = path {
             let folder = try? Folder(path: path)
+            var exculdeFiles: Set<String> = Set()
+            exclude.forEach { file in
+                let excludeFilePath = path + "/\(file)"
+                exculdeFiles.insert(excludeFilePath)
+            }
+            
             folder?.files.recursive.forEach {
-                if !excludeDic.contains($0.path) {
+                if !exculdeFiles.contains($0.path) {
                     results.append($0.path)
                 }
             }
@@ -69,9 +83,17 @@ public struct LocalModule: IModule {
         }
         
         for p in possibility {
-            if let folder = try? Folder(path: "\(root)/\(p)/\(name)") {
+            let rootPath = "\(root)/\(p)/\(name)"
+            
+            if let folder = try? Folder(path: rootPath) {
+                var exculdeFiles: Set<String> = Set()
+                exclude.forEach { file in
+                    let excludeFilePath = rootPath + "/\(file)"
+                    exculdeFiles.insert(excludeFilePath)
+                }
+                
                 folder.files.recursive.forEach {
-                    if !excludeDic.contains($0.path) {
+                    if !exculdeFiles.contains($0.path) {
                         results.append($0.path)
                     }
                 }
