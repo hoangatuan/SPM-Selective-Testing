@@ -24,17 +24,10 @@ struct RunTest: SelectiveTestingStep {
             return .none
         }
         
-        let startDate = Date()
         logTestTargets(state: state, updatedTestPlan: testPlan)
-        try shellOut(to: "xcodebuild", arguments: state.configuration?.testCommandArguments ?? [])
         
-        let endDate = Date()
-        let duration = DateInterval(
-            start: startDate,
-            end: endDate
-        ).duration
-        
-        log(message: "Test successfully in \(duration) seconds!!! ✅", color: .green)
+        let result = try shellOut(to: "xcodebuild", arguments: state.configuration?.testCommandArguments ?? [])
+        log(message: result)
         
         return .none
     }
