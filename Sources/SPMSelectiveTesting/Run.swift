@@ -51,7 +51,12 @@ struct Run: AsyncParsableCommand {
         do {
             try await handler.run()
             log(message: "SUCCESSFULLY!!! 🚀🚀🚀", color: .green)
-        } catch {
+        } catch let error {
+            if let error = error as? SelectiveTestingError {
+                log(message: "❌ Error occured: \(error.localizedDescription)", color: .red)
+                return
+            }
+
             log(message: "❌ Error occured: \(error.localizedDescription)", color: .red)
         }
     }

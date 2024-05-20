@@ -29,9 +29,14 @@ final class DependenciesReader {
         }
         
         let jsonData = jsonString.data(using: .utf8)!
-        return try decoder
-            .decode(DumpPackageResponse.self, from: jsonData)
-            .toModule()
+
+        do {
+            return try decoder
+                .decode(DumpPackageResponse.self, from: jsonData)
+                .toModule()
+        } catch {
+            throw SelectiveTestingError.parseLocalPackageFailed(path: packageRootDirectoryPath)
+        }
     }
     
     private func dumpPackage() throws -> String {
@@ -60,6 +65,18 @@ private struct DumpPackageResponse: Decodable {
         struct Dependency: Decodable {
             let byName: [String?]?
             let product: [String?]?
+
+            enum CodingKeys: CodingKey {
+                case byName
+                case product
+            }
+
+            init(from decoder: Decoder) throws {
+                let container: KeyedDecodingContainer<DumpPackageResponse.Target.Dependency.CodingKeys> = try decoder.container(keyedBy: DumpPackageResponse.Target.Dependency.CodingKeys.self)
+                self.byName = try container.decodeIfPresent([String?].self, forKey: DumpPackageResponse.Target.Dependency.CodingKeys.byName)
+                let products = try container.decodeIfPresent([AnyDecodable?].self, forKey: DumpPackageResponse.Target.Dependency.CodingKeys.product)
+                self.product = products?.compactMap { $0?.value as? String }
+            }
         }
     }
     
