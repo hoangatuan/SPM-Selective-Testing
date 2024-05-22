@@ -16,7 +16,8 @@ let package = Package(
         .package(url: "https://github.com/JohnSundell/ShellOut.git", from: "2.0.0"),
         .package(url: "https://github.com/JohnSundell/Files", from: "4.2.0"),
         .package(url: "https://github.com/jpsim/Yams.git", from: "5.0.6"),
-        .package(url: "https://github.com/apple/swift-tools-support-core", from: "0.6.0")
+        .package(url: "https://github.com/apple/swift-tools-support-core", from: "0.6.0"),
+        .package(url: "https://github.com/marmelroy/Zip", from: "2.1.0")
     ],
     targets: [
         .executableTarget(
@@ -32,6 +33,7 @@ let package = Package(
                 "ShellOut",
                 "Files",
                 "Yams",
+                "Zip",
                 .product(name: "SwiftToolsSupport-auto", package: "swift-tools-support-core")
             ]
         )

@@ -53,7 +53,7 @@ actor ModuleHasher: ModuleHashing {
     private func hash(module: IModule) async throws -> MD5Hash {
         if let hash = dic[module.name] { return hash }
         
-        let sourcesHash = try await sourceFileContentHasher.hash(sources: module.sourceCodes)
+        let sourcesHash = try await sourceFileContentHasher.hash(module: module)
         let version = versionHasher.hash(module: module)
         let dependenciesHash = try await hashDependencies(of: module)
         let platformHash = try platformHasher.hash(module: module)

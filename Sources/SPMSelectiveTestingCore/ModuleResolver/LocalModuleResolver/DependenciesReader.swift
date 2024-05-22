@@ -54,6 +54,7 @@ private struct DumpPackageResponse: Decodable {
     let targets: [Target]
     
     struct Target: Decodable {
+        let checksum: String?
         let name: String
         let type: TargetType
         let dependencies: [Dependency]
@@ -106,6 +107,7 @@ extension DumpPackageResponse {
             let productDependencies = target.dependencies.compactMap { $0.product?.compactMap { $0 }.first }
             let dependencies = byNameDependencies + productDependencies
             return LocalModule(
+                checksum: target.checksum,
                 name: target.name,
                 type: target.type,
                 dependencies: dependencies,

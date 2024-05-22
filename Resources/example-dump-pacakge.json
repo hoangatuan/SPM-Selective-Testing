@@ -1,185 +1,204 @@
 {
-  "cLanguageStandard" : null,
-  "cxxLanguageStandard" : null,
-  "dependencies" : [
-    {
-      "fileSystem" : [
+    "cLanguageStandard" : null,
+    "cxxLanguageStandard" : null,
+    "dependencies" : [
         {
-          "identity" : "network",
-          "path" : "/Users/tuanhoang/Documents/iMovie/Foundation/Domain/Network",
-          "productFilter" : null
-        }
-      ]
-    },
-    {
-      "fileSystem" : [
-        {
-          "identity" : "helpermacros",
-          "path" : "/Users/tuanhoang/Documents/iMovie/Foundation/Domain/HelperMacros",
-          "productFilter" : null
-        }
-      ]
-    }
-  ],
-  "name" : "Domain",
-  "packageKind" : {
-    "root" : [
-      "/Users/tuanhoang/Documents/iMovie/Foundation/Domain"
-    ]
-  },
-  "pkgConfig" : null,
-  "platforms" : [
-    {
-      "options" : [
-
-      ],
-      "platformName" : "ios",
-      "version" : "16.0"
-    }
-  ],
-  "products" : [
-    {
-      "name" : "Domain",
-      "settings" : [
-
-      ],
-      "targets" : [
-        "Domain"
-      ],
-      "type" : {
-        "library" : [
-          "automatic"
-        ]
-      }
-    },
-    {
-      "name" : "DomainData",
-      "settings" : [
-
-      ],
-      "targets" : [
-        "DomainData"
-      ],
-      "type" : {
-        "library" : [
-          "automatic"
-        ]
-      }
-    }
-  ],
-  "providers" : null,
-  "swiftLanguageVersions" : null,
-  "targets" : [
-    {
-      "dependencies" : [
-        {
-          "byName" : [
-            "HelperMacros",
-            null
-          ]
-        }
-      ],
-      "exclude" : [
-        "Model/Credit.swift"
-      ],
-      "name" : "Domain",
-      "packageAccess" : true,
-      "resources" : [
-
-      ],
-      "settings" : [
-        {
-          "kind" : {
-            "unsafeFlags" : {
-              "_0" : [
-                "-Xfrontend",
-                "-warn-long-function-bodies=200",
-                "-Xfrontend",
-                "-warn-long-expression-type-checking=200"
-              ]
-            }
-          },
-          "tool" : "swift"
-        }
-      ],
-      "type" : "regular"
-    },
-    {
-      "dependencies" : [
-        {
-          "byName" : [
-            "Domain",
-            null
-          ]
+            "fileSystem" : [
+                {
+                    "identity" : "network",
+                    "path" : "/Users/tuanhoang/Documents/iMovie/Foundation/Domain/Network",
+                    "productFilter" : null
+                }
+            ]
         },
         {
-          "byName" : [
-            "Network",
-            null
-          ]
+            "fileSystem" : [
+                {
+                    "identity" : "helpermacros",
+                    "path" : "/Users/tuanhoang/Documents/iMovie/Foundation/Domain/HelperMacros",
+                    "productFilter" : null
+                }
+            ]
         }
-      ],
-      "exclude" : [
-        "DTO/CreditResponse.swift"
-      ],
-      "name" : "DomainData",
-      "packageAccess" : true,
-      "resources" : [
-
-      ],
-      "settings" : [
-        {
-          "kind" : {
-            "unsafeFlags" : {
-              "_0" : [
-                "-Xfrontend",
-                "-warn-long-function-bodies=200",
-                "-Xfrontend",
-                "-warn-long-expression-type-checking=200"
-              ]
-            }
-          },
-          "tool" : "swift"
-        }
-      ],
-      "type" : "regular"
+    ],
+    "name" : "Domain",
+    "packageKind" : {
+        "root" : [
+            "/Users/tuanhoang/Documents/iMovie/Foundation/Domain"
+        ]
     },
-    {
-      "dependencies" : [
+    "pkgConfig" : null,
+    "platforms" : [
         {
-          "byName" : [
-            "Domain",
-            null
-          ]
+            "options" : [
+                
+            ],
+            "platformName" : "ios",
+            "version" : "16.0"
         }
-      ],
-      "exclude" : [
-
-      ],
-      "name" : "DomainTests",
-      "packageAccess" : true,
-      "resources" : [
-
-      ],
-      "settings" : [
+    ],
+    "products" : [
         {
-          "kind" : {
-            "unsafeFlags" : {
-              "_0" : [
-                "-Xfrontend",
-                "-warn-long-function-bodies=200",
-                "-Xfrontend",
-                "-warn-long-expression-type-checking=200"
-              ]
+            "name" : "Domain",
+            "settings" : [
+                
+            ],
+            "targets" : [
+                "Domain"
+            ],
+            "type" : {
+                "library" : [
+                    "automatic"
+                ]
             }
-          },
-          "tool" : "swift"
+        },
+        {
+            "name" : "DomainData",
+            "settings" : [
+                
+            ],
+            "targets" : [
+                "DomainData"
+            ],
+            "type" : {
+                "library" : [
+                    "automatic"
+                ]
+            }
         }
-      ],
-      "type" : "test"
+    ],
+    "providers" : null,
+    "swiftLanguageVersions" : null,
+    "targets" : [
+        {
+            "dependencies" : [
+                {
+                    "byName" : [
+                        "HelperMacros",
+                        null
+                    ]
+                }
+            ],
+            "exclude" : [
+                "Model/Credit.swift"
+            ],
+            "name" : "Domain",
+            "packageAccess" : true,
+            "resources" : [
+                
+            ],
+            "settings" : [
+                {
+                    "kind" : {
+                        "unsafeFlags" : {
+                            "_0" : [
+                                "-Xfrontend",
+                                "-warn-long-function-bodies=200",
+                                "-Xfrontend",
+                                "-warn-long-expression-type-checking=200"
+                            ]
+                        }
+                    },
+                    "tool" : "swift"
+                }
+            ],
+            "type" : "regular"
+        },
+        {
+            "dependencies" : [
+                {
+                    "byName" : [
+                        "Domain",
+                        null
+                    ]
+                },
+                {
+                    "byName" : [
+                        "Network",
+                        null
+                    ]
+                }
+            ],
+            "exclude" : [
+                "DTO/CreditResponse.swift"
+            ],
+            "name" : "DomainData",
+            "packageAccess" : true,
+            "resources" : [
+                
+            ],
+            "settings" : [
+                {
+                    "kind" : {
+                        "unsafeFlags" : {
+                            "_0" : [
+                                "-Xfrontend",
+                                "-warn-long-function-bodies=200",
+                                "-Xfrontend",
+                                "-warn-long-expression-type-checking=200"
+                            ]
+                        }
+                    },
+                    "tool" : "swift"
+                }
+            ],
+            "type" : "regular"
+        },
+        {
+            "dependencies" : [
+                {
+                    "byName" : [
+                        "Domain",
+                        null
+                    ]
+                }
+            ],
+            "exclude" : [
+                
+            ],
+            "name" : "DomainTests",
+            "packageAccess" : true,
+            "resources" : [
+                
+            ],
+            "settings" : [
+                {
+                    "kind" : {
+                        "unsafeFlags" : {
+                            "_0" : [
+                                "-Xfrontend",
+                                "-warn-long-function-bodies=200",
+                                "-Xfrontend",
+                                "-warn-long-expression-type-checking=200"
+                            ]
+                        }
+                    },
+                    "tool" : "swift"
+                }
+            ],
+            "type" : "test"
+        },
+        {
+            "checksum" : "227258fdb2f920f8ce90d4f08d019e1b0db5a4ad2090afa012fd7c2c91716df3",
+            "dependencies" : [
+                
+            ],
+            "exclude" : [
+                
+            ],
+            "name" : "SwiftLintBinary",
+            "packageAccess" : false,
+            "resources" : [
+                
+            ],
+            "settings" : [
+                
+            ],
+            "type" : "binary",
+            "url" : "https://github.com/realm/SwiftLint/releases/download/0.49.1/SwiftLintBinary-macos.artifactbundle.zip"
+        },
+    ],
+    "toolsVersion" : {
+        "_version" : "5.9.0"
     }
-  ],
-  "toolsVersion" : {
-    "_version" : "5.9.0"
-  }
 }

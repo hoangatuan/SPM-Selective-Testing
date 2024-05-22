@@ -25,6 +25,7 @@ struct Platform: Decodable {
 }
 
 public struct LocalModule: IModule {
+    let checksum: String?
     let name: String
     let type: TargetType
     let dependencies: [String]

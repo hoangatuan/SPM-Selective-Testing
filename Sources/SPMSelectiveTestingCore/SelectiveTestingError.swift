@@ -12,6 +12,7 @@ public enum SelectiveTestingError: Error {
     case configurationInvalid
     case testPlanInvalid
     case parseLocalPackageFailed(path: String)
+    case calculateCheckSumFailed(moduleName: String)
     case dataProcessingError(message: String)
 
     var localizedDescription: String {
@@ -24,6 +25,8 @@ public enum SelectiveTestingError: Error {
             return "Test plan is invalid"
         case .parseLocalPackageFailed(let path):
             return "Parse local package at \(path) failed"
+        case .calculateCheckSumFailed(let moduleName):
+            return "Calculate checksum for module \(moduleName) failed"
         case .dataProcessingError(let message):
             return "Data processing error: \(message)"
         }
