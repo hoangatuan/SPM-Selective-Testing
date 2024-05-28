@@ -59,7 +59,7 @@ struct SourceFileContentHasher: SourceFileContentHashing {
     
     private func hashSourceFiles(module: LocalModule) async throws -> MD5Hash {
         let sources = module.sourceCodes
-        let files = try sources.map { try $0.asFiles() }.flatMap { $0 }
+        let files = try sources.map { try $0.asFiles() }.flatMap { $0 }.sorted(by: { $0.name < $1.name })
 
         let md5HashesDic: [FileName: MD5Hash] = try await withThrowingTaskGroup(of: (fileName: String, hash: MD5Hash).self) { group in
             var md5Hashes: [FileName: MD5Hash] = [:]
